@@ -33,6 +33,7 @@
         <activity
             android:launchMode="singleTop"
             android:name="com.timewaste.games.shoot.Shoot"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Shoot"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>

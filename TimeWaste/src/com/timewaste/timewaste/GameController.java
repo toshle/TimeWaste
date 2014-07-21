@@ -58,7 +58,7 @@ public class GameController extends Service {
 	}
 	
 	private void loadNextGame() {
-        Intent dialogIntent = new Intent(context, TicTacToe.class);
+        Intent dialogIntent = new Intent(context, Shoot.class);
 		dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(dialogIntent);
         Toast.makeText(this, "Game loaded", Toast.LENGTH_LONG).show();

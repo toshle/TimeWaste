@@ -116,8 +116,8 @@ public class TicTacToeGround {
 	}
 	
 	//Touching logic.
-	private Sprite set_image_location_and_logic(float x, float y) {
-		return new Sprite(x, y, textures.get("empty"), game_instance.getVertexBufferObjectManager()) {
+	private Sprite set_image_logic() {
+		return new Sprite(0, 0, textures.get("empty"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				if(this.getTextureRegion() == textures.get("empty")) {
 					this.setTextureRegion(textures.get("tick"));
@@ -144,7 +144,8 @@ public class TicTacToeGround {
 				current_y += textures.get("empty").getHeight();
 				current_x  = a_scene.getChildByIndex(0).getX();
 			}
-			ground[i] = set_image_location_and_logic(current_x + separator_x * ((i % 3) + 1), current_y + separator_y);
+			ground[i] = set_image_logic();
+			ground[i].setPosition(current_x + separator_x * ((i % 3) + 1), current_y + separator_y);
 			a_scene.registerTouchArea(ground[i]);
 			current_x += textures.get("empty").getWidth();
 		}
