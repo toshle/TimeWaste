@@ -1,6 +1,10 @@
 package com.timewaste.timewaste;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.timewaste.games.shoot.Shoot;
 import com.timewaste.games.tictactoe.*;
 
@@ -19,7 +23,13 @@ public class GameController extends Service {
 	/** indicates whether onRebind should be used */
 	boolean mAllowRebind;
 	
-	private int mInterval = 5000; // 5 seconds by default, can be changed later
+	private int category;
+	
+	private Random randomizer;
+	
+	private List<Class<?>>[] categories;
+	
+	private int mInterval = 30000; // 30 seconds by default, can be changed later
 	private Handler mHandler;
 	
 	Context context;
@@ -27,8 +37,17 @@ public class GameController extends Service {
 	/** Called when the service is being created. */
 	@Override
 	public void onCreate() {
+		randomizer = new Random();
 		mHandler = new Handler();
-
+		categories = new List[4];
+		categories[0] = new ArrayList<Class<?>>();
+		categories[1] = new ArrayList<Class<?>>();
+		categories[2] = new ArrayList<Class<?>>();
+		categories[3] = new ArrayList<Class<?>>();
+		
+		categories[0].add(TicTacToe.class);
+		categories[0].add(Shoot.class);
+		
 		context = this;
 		startRepeatingTask();
 		
@@ -37,7 +56,7 @@ public class GameController extends Service {
 	/** The service is starting, due to a call to startService() */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		category = intent.getIntExtra("category", 1) - 1;
 		return mStartMode;
 	}
 	
@@ -57,8 +76,8 @@ public class GameController extends Service {
 	    mHandler.removeCallbacks(mGameLoader);
 	}
 	
-	private void loadNextGame() {
-        Intent dialogIntent = new Intent(context, Shoot.class);
+	public void loadNextGame() {
+        Intent dialogIntent = new Intent(context, categories[category].get(randomizer.nextInt(categories[category].size())));
 		dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(dialogIntent);
         Toast.makeText(this, "Game loaded", Toast.LENGTH_LONG).show();

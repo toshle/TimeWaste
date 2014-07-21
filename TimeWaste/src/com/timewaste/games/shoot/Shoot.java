@@ -33,6 +33,7 @@ public class Shoot extends GameActivity {
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
+		super.onCreateEngineOptions();
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -121,6 +122,7 @@ public class Shoot extends GameActivity {
 	
 	@Override
 	public Scene onCreateScene() {
+		super.onCreateScene();
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 
 		final Scene scene = new Scene();
@@ -134,7 +136,7 @@ public class Shoot extends GameActivity {
 		
 		ShootLogic logic = new ShootLogic(this, scene, this.textures, CAMERA_WIDTH, CAMERA_HEIGHT);
 		logic.render(scene);
-		
+		this.runCycle(scene);
 		return scene;
 	}
 }
