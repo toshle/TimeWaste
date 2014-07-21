@@ -25,9 +25,11 @@
         <activity
             android:launchMode="singleTop"
             android:name="com.timewaste.games.tictactoe.TicTacToe"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="TicTacToe"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
+        
         <activity
             android:launchMode="singleTop"
             android:name="com.timewaste.games.shoot.Shoot"

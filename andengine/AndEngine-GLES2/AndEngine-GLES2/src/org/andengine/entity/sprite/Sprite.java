@@ -48,7 +48,7 @@ public class Sprite extends RectangularShape {
 	// Fields
 	// ===========================================================
 
-	protected final ITextureRegion mTextureRegion;
+	protected ITextureRegion mTextureRegion;
 	protected final ISpriteVertexBufferObject mSpriteVertexBufferObject;
 
 	protected boolean mFlippedVertical;
@@ -155,6 +155,10 @@ public class Sprite extends RectangularShape {
 
 			this.onUpdateTextureCoordinates();
 		}
+	}
+	
+	public void setTextureRegion(ITextureRegion textureRegion) {
+	    this.mTextureRegion = textureRegion;
 	}
 
 	// ===========================================================

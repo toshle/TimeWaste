@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
-import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -17,9 +17,10 @@ import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
-import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
+
+import android.content.Context;
 
 import com.timewaste.timewaste.GameActivity;
 
@@ -34,35 +35,36 @@ public class TicTacToe extends GameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
 	}
 	
 	@Override
 	public void onCreateResources() {
+		final Context context = this;
 		try {
 			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return getAssets().open("/gfx/ticktacktoe/gif/tick_tack.gif");
+					return context.getAssets().open("gfx/ticktacktoe/gif/tick_tack.gif");
 				}
 			});
 			
 			ITexture empty_texture = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 		        @Override
 		        public InputStream open() throws IOException {
-		            return getAssets().open("gfx/ticktacktoe/gif/empty.gif");
+		            return context.getAssets().open("gfx/ticktacktoe/gif/empty.gif");
 		        }
 		    });
 			ITexture tick_texture = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 		        @Override
 		        public InputStream open() throws IOException {
-		            return getAssets().open("gfx/ticktacktoe/gif/tick.gif");
+		            return context.getAssets().open("gfx/ticktacktoe/gif/tick.gif");
 		        }
 		    });
 			ITexture tack_texture = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 		        @Override
 		        public InputStream open() throws IOException {
-		            return getAssets().open("gfx/ticktacktoe/gif/tack.gif");
+		            return context.getAssets().open("gfx/ticktacktoe/gif/tack.gif");
 		        }
 		    });
 			
@@ -98,8 +100,8 @@ public class TicTacToe extends GameActivity {
 		ground_image.setHeight(ground_image.getHeight() - margin * 2);
 		
 		scene.attachChild(ground_image);
-		//TickTackToeGround ground = new TickTackToeGround(this, scene, this.textures);
-		//ground.render(scene);
+		TicTacToeGround ground = new TicTacToeGround(this, scene, this.textures);
+		ground.render(scene);
 		
 		return scene;
 	}
