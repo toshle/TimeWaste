@@ -101,9 +101,9 @@ public class ShootLogic {
 		this.textures = textures;
 		set_ground_images(a_scene);
 		
-		String asd = "asdasd";
-		int bar = Integer.parseInt(asd);
-		String asdd = Integer.toString(bar);
+//		String asd = "asdasd";
+//		int bar = Integer.parseInt(asd);
+//		String asdd = Integer.toString(bar);
 
 	}
 	
