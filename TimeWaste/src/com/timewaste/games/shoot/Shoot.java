@@ -1,4 +1,4 @@
-package com.timewaste.games.tictactoe;
+package com.timewaste.games.shoot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,10 +20,9 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
-
 import com.timewaste.timewaste.GameActivity;
 
-public class TicTacToe extends GameActivity {
+public class Shoot extends GameActivity {
 
 	private static final int CAMERA_WIDTH = 720;
 	private static final int CAMERA_HEIGHT = 480;
@@ -43,7 +42,7 @@ public class TicTacToe extends GameActivity {
 			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return getAssets().open("/gfx/ticktacktoe/gif/tick_tack.gif");
+					return getAssets().open("gfx/ticktacktoe/gif/tick_tack.gif");
 				}
 			});
 			
