@@ -132,7 +132,7 @@ public class Shoot extends GameActivity {
 		
 		scene.attachChild(ground_image);
 		
-		ShootLogic logic = new ShootLogic(this, scene, this.textures);
+		ShootLogic logic = new ShootLogic(this, scene, this.textures, CAMERA_WIDTH, CAMERA_HEIGHT);
 		logic.render(scene);
 		
 		return scene;

@@ -71,20 +71,19 @@ public class ShootLogic {
 	}
 	
 	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_ground_images(Scene a_scene) {
-		float device_width  = game_instance.getResources().getDisplayMetrics().widthPixels;
-        float device_height = game_instance.getResources().getDisplayMetrics().heightPixels;
+	private void set_ground_images(Scene a_scene, int width, int height) {
+		float device_width  = width;//game_instance.getResources().getDisplayMetrics().widthPixels;
+        float device_height = height;//game_instance.getResources().getDisplayMetrics().heightPixels;
         
-		float current_x = a_scene.getFirstChild().getX() + device_width / 16;
-		float current_y = a_scene.getFirstChild().getY() + device_height / 3.7f;
-		float separator_x = device_width / 2.8f, separator_y = device_height / 2.55f;
+		float current_x = device_width / 16;
+		float current_y = device_height / 3.7f;
+		float separator_x = device_width / 2.6f, separator_y = device_height / 2.55f;
 	
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
-				current_x = a_scene.getFirstChild().getX() + device_width / 16;
+				current_x = device_width / 16;
 				current_y += separator_y;
 			}
-			if(i != 0 && ((i + 1) % 2) == 0) separator_x /= 1.1f; 
 			ground[i] = set_image_logic(); 
 			ground[i].setPosition(current_x, current_y);
 			a_scene.registerTouchArea(ground[i]);
@@ -92,14 +91,14 @@ public class ShootLogic {
 			separator_x = device_width / 2.8f;
 		}
 		ground[4].setPosition(ground[4].getX() + separator_x / 12f, ground[4].getY());
+		ground[5].setPosition(ground[5].getX() + separator_x / 12f, ground[5].getY());
 		randomize_image();
 	}
 	
-	public ShootLogic(SimpleBaseGameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures)
-	{
+	public ShootLogic(SimpleBaseGameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures, int width, int height) {
 		this.game_instance = game_instance;
 		this.textures = textures;
-		set_ground_images(a_scene);
+		set_ground_images(a_scene, width, height);
 		
 //		String asd = "asdasd";
 //		int bar = Integer.parseInt(asd);
