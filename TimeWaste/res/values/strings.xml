@@ -3,5 +3,7 @@
 
     <string name="app_name">TimeWaste</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_drink_farm">DrinkFarm</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

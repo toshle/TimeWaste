@@ -10,6 +10,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import com.timewaste.games.shoot.Shoot;
 import com.timewaste.games.tictactoe.TicTacToe;
+import com.timewaste.games.drinkfarm.DrinkFarm;
 import com.timewaste.utils.Timer;
 import com.timewaste.utils.Timer.ITimerCallback;
 
@@ -52,6 +53,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		
 		categories[0].add(TicTacToe.class);
 		categories[0].add(Shoot.class);
+		//categories[0].add(DrinkFarm.class);
 		
 		context = this;
 		// TODO Auto-generated method stub
