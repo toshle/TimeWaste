@@ -1,6 +1,8 @@
 package com.timewaste.timewaste;
 
+import com.timewaste.games.labyrinth.Labyrinth;
 import com.timewaste.games.shoot.Shoot;
+import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.timewaste.R;
 
 import android.app.Activity;
@@ -74,7 +76,7 @@ public class CategoriesActivity extends Activity {
 		        gameIntent.putExtra("category", 3);
 		        gameIntent.putExtra("gameTime", -1);
 		        
-		     startActivity(gameIntent);
+		        startActivity(gameIntent);
 		    }
 	
 	public void onStop() {
