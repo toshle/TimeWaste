@@ -20,7 +20,9 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 
 import com.timewaste.timewaste.GameActivity;
@@ -28,14 +30,19 @@ import com.timewaste.utils.GamePad;
 
 public class Labyrinth extends GameActivity {
 
-	private static final int CAMERA_WIDTH = 720;
-	private static final int CAMERA_HEIGHT = 480;
-
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		if(screen_height() < screen_width()) {
+			CAMERA_WIDTH = screen_width();
+			CAMERA_HEIGHT = screen_height();
+		} else {
+			CAMERA_WIDTH = screen_height();
+			CAMERA_HEIGHT = screen_width();
+		}
+
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -64,17 +71,46 @@ public class Labyrinth extends GameActivity {
 					return context.getAssets().open("gfx/labyrinth/snake_tailpart.png");
 				}
 			});
+			ITexture grape = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/labyrinth/grape.png");
+				}
+			});
 		
 			face_box.load();
 			grass.load();
 			wall.load();
+			grape.load();
 			
 			textures.put("face_box", TextureRegionFactory.extractFromTexture(face_box));
 			textures.put("grass", TextureRegionFactory.extractFromTexture(grass));
 			textures.put("wall", TextureRegionFactory.extractFromTexture(wall));
+			textures.put("grape", TextureRegionFactory.extractFromTexture(grape));
+
 		} catch (IOException e) {
 			Debug.e(e);
 		}
+	}
+	
+	private void show_score() {
+		final Labyrinth context = this;
+		this.runOnUiThread(new Runnable() {
+		    @Override
+		    public void run() {
+		        //Toast.makeText(TickTackToe.this, message, Toast.LENGTH_SHORT).show();
+		    	AlertDialog.Builder alert = new AlertDialog.Builder(context).
+		        setTitle("Game Ended").
+		        setMessage("Your win!").
+		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int id) {
+			        	context.finalization();
+			        	context.loadNextGame();
+			        }
+		        });
+		    	alert.show();
+		    }
+		});
 	}
 	
 	@Override
@@ -97,25 +133,25 @@ public class Labyrinth extends GameActivity {
 				int x = moving_object.get_x();
 				int y = moving_object.get_y();
 				moving_object.move_left();
-				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene, moving_object);
 			}
 			public void action_right_arrow() {
 				int x = moving_object.get_x();
 				int y = moving_object.get_y();
 				moving_object.move_right();
-				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene, moving_object);
 			}
 			public void action_up_arrow() {
 				int x = moving_object.get_x();
 				int y = moving_object.get_y();
 				moving_object.move_up();
-				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene, moving_object);
 			}
 			public void action_down_arrow() {
 				int x = moving_object.get_x();
 				int y = moving_object.get_y();
 				moving_object.move_down();
-				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene, moving_object);
 			}
 		};
 		
@@ -123,34 +159,48 @@ public class Labyrinth extends GameActivity {
 		return scene;
 	}
 	
-	private void update_labyrinth(int x, int y, int new_x, int new_y, Sprite[][] matrix, Scene scene) {
+	private void update_labyrinth(int x, int y, int new_x, int new_y, Sprite[][] matrix, Scene scene, MovingObject moving_object) {
 		if (x != new_x || y != new_y) {
-			matrix[x][y] = 	new Sprite((x -1)*this.textures.get("grass").getWidth(), (y - 1)*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
-			matrix[new_x][new_y] = 	new Sprite((new_x - 1)*this.textures.get("face_box").getWidth(), (new_y - 1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+			float width = CAMERA_WIDTH / moving_object.get_maze().get_width();
+			float length = CAMERA_HEIGHT / moving_object.get_maze().get_length();
+
+			matrix[x][y] = 	new Sprite((x -1)*width, (y - 1)*length, this.textures.get("grass"), this.getVertexBufferObjectManager());
+			matrix[new_x][new_y] = 	new Sprite((new_x - 1)*width, (new_y - 1)*length, this.textures.get("face_box"), this.getVertexBufferObjectManager());
 			scene.attachChild(matrix[x][y]);
 			scene.attachChild(matrix[new_x][new_y]);
-			if ((x - 1)*this.textures.get("grass").getWidth() < CAMERA_WIDTH/2 || (y - 1)*this.textures.get("grass").getHeight() < CAMERA_HEIGHT/2)
+
+			if ((x - 1)*width < CAMERA_WIDTH/2 || (y - 1)*length < CAMERA_HEIGHT/2)
 				matrix[x][y].setZIndex(1);
-			if ((new_x - 1)*this.textures.get("grass").getWidth() < CAMERA_WIDTH/2 || (new_y - 1)*this.textures.get("grass").getHeight() < CAMERA_HEIGHT/2)
+			if ((new_x - 1)*width < CAMERA_WIDTH/2 || (new_y - 1)*length < CAMERA_HEIGHT/2)
 				matrix[new_x][new_y].setZIndex(1);
+
+			matrix[x][y].setSize(width, length);
+			matrix[new_x][new_y].setSize(width, length);
 		}
 		scene.sortChildren();
+		
+		if (moving_object.get_maze().game_maze.get(new Point(new_x, new_y)) == 3)
+			show_score();
 	}
 	
 	private void visualize_labyrinth(Scene scene, Sprite[][] matrix, MovingObject moving_object) {
+		float width = CAMERA_WIDTH / moving_object.get_maze().get_width();
+		float length = CAMERA_HEIGHT / moving_object.get_maze().get_length();
+
 		for (int j = 1; j <= moving_object.get_maze().get_length(); j++) {
 			for (int i = 1; i <= moving_object.get_maze().get_width(); i++) {
 				int status = moving_object.get_maze().game_maze.get(new Point(i, j));
 
 				if (status == 0)
-					matrix[i][j] = new Sprite((i - 1)*this.textures.get("grass").getWidth(), (j - 1)*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("grass"), this.getVertexBufferObjectManager());
 				else if (status == 1)
-					matrix[i][j] = new Sprite((i - 1)*this.textures.get("wall").getWidth(), (j - 1)*this.textures.get("wall").getHeight(), this.textures.get("wall"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("wall"), this.getVertexBufferObjectManager());
 				else if (status == 2)
-					matrix[i][j] = new Sprite((i - 1)*this.textures.get("face_box").getWidth(), (j - 1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("face_box"), this.getVertexBufferObjectManager());
 				else if (status == 3)
-					matrix[i][j] = new Sprite((i - 1)*this.textures.get("face_box").getWidth(), (j - 1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("grape"), this.getVertexBufferObjectManager());
 				
+				matrix[i][j].setSize(width, length);
 				scene.attachChild(matrix[i][j]);
 			}
 		}
