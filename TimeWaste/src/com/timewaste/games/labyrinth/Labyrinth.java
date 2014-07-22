@@ -91,9 +91,7 @@ public class Labyrinth extends GameActivity {
 		final Sprite[][] matrix = new Sprite[maze.get_length() + 1][maze.get_width() + 1];
 		
 		visualize_labyrinth(scene, matrix, moving_object);
-//		final int x = 100;
-//		matrix[0][0] = 	new Sprite(0, 0, this.textures.get("grass"), this.getVertexBufferObjectManager());
-//		scene.attachChild(matrix[0][0]);
+
 		GamePad pad = new GamePad(this, scene, 0, CAMERA_HEIGHT/1.8f, CAMERA_WIDTH, CAMERA_HEIGHT) {
 			public void action_left_arrow() {
 				int x = moving_object.get_x();

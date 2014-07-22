@@ -54,7 +54,7 @@ public class MovingObject {
 	}
 	
 	public void move_down() {
-		if (this.y != this.maze.get_length() && this.maze.game_maze.get(new Point(this.x + 1, this.y)) != 1) {
+		if (this.y != this.maze.get_length() && this.maze.game_maze.get(new Point(this.x, this.y + 1)) != 1) {
 			this.maze.game_maze.put(new Point(this.x, this.y), 0);
 			this.y += 1;
 			if (this.maze.game_maze.get(new Point(this.x, this.y)) != 3)
