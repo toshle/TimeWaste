@@ -72,26 +72,28 @@ public class ShootLogic {
 	
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_ground_images(Scene a_scene, int width, int height) {
-		float device_width  = width;//game_instance.getResources().getDisplayMetrics().widthPixels;
-        float device_height = height;//game_instance.getResources().getDisplayMetrics().heightPixels;
+		//float device_width  = width;//game_instance.getResources().getDisplayMetrics().widthPixels;
+        //float device_height = height;//game_instance.getResources().getDisplayMetrics().heightPixels;
         
-		float current_x = device_width / 16;
-		float current_y = device_height / 3.7f;
-		float separator_x = device_width / 2.6f, separator_y = device_height / 2.55f;
+		float current_x = 45;//device_width / 16;
+		float current_y = 130;//device_height / 3.7f;
+		//float separator_x = device_width / 2.6f, separator_y = device_height / 2.55f;
+		float separator_x = 280, separator_y = 188;
 	
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
-				current_x = device_width / 16;
+				//current_x = device_width / 16;
+				current_x = 45;
 				current_y += separator_y;
 			}
 			ground[i] = set_image_logic(); 
 			ground[i].setPosition(current_x, current_y);
 			a_scene.registerTouchArea(ground[i]);
 			current_x += separator_x;
-			separator_x = device_width / 2.8f;
+			separator_x = 270;//device_width / 2.8f;
 		}
-		ground[4].setPosition(ground[4].getX() + separator_x / 12f, ground[4].getY());
-		ground[5].setPosition(ground[5].getX() + separator_x / 12f, ground[5].getY());
+		//ground[4].setPosition(ground[4].getX() + separator_x / 12f, ground[4].getY());
+		//ground[5].setPosition(ground[5].getX() + separator_x / 12f, ground[5].getY());
 		randomize_image();
 	}
 	

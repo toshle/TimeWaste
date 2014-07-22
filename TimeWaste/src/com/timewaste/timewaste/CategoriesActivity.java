@@ -1,5 +1,6 @@
 package com.timewaste.timewaste;
 
+import com.timewaste.games.shoot.Shoot;
 import com.timewaste.timewaste.R;
 
 import android.app.Activity;
@@ -55,6 +56,7 @@ public class CategoriesActivity extends Activity {
 		return category;
 	}
 	
+	/*
 	public void playGame(View view) {
 		int gameCategory = categoryIdToInt(view.getId());
 		Intent gameIntent = new Intent(this, categories.selectGame(gameCategory, null));
@@ -63,7 +65,17 @@ public class CategoriesActivity extends Activity {
         gameIntent.putExtra("gameTime", categories.gameTime(gameCategory));
         
     	startActivity(gameIntent);
-    }
+    }*/
+	
+	public void playGame(View view) {
+		  
+		  Intent gameIntent = new Intent(this, Shoot.class);
+		        
+		        gameIntent.putExtra("category", 3);
+		        gameIntent.putExtra("gameTime", -1);
+		        
+		     startActivity(gameIntent);
+		    }
 	
 	public void onStop() {
 		super.onStop();
