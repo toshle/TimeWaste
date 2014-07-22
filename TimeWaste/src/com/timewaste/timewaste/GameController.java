@@ -1,15 +1,14 @@
 package com.timewaste.timewaste;
 
 
-import com.timewaste.games.shoot.Shoot;
-import com.timewaste.games.tictactoe.*;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
+
+import com.timewaste.games.labyrinth.Labyrinth;
 
 public class GameController extends Service {
 	/** indicates how to behave if the service is killed */
@@ -58,7 +57,7 @@ public class GameController extends Service {
 	}
 	
 	private void loadNextGame() {
-        Intent dialogIntent = new Intent(context, Shoot.class);
+        Intent dialogIntent = new Intent(context, Labyrinth.class);
 		dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(dialogIntent);
         Toast.makeText(this, "Game loaded", Toast.LENGTH_LONG).show();
