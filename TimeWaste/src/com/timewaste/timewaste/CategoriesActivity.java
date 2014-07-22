@@ -1,8 +1,5 @@
 package com.timewaste.timewaste;
 
-import com.timewaste.games.drinkfarm.DrinkFarm;
-import com.timewaste.games.labyrinth.Labyrinth;
-import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.timewaste.R;
 
 import android.app.Activity;
@@ -13,9 +10,12 @@ import android.view.MenuInflater;
 import android.view.View;
 
 public class CategoriesActivity extends Activity {
+	
+	private Categories categories;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		categories = new Categories();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_categories);
 	}
@@ -34,14 +34,38 @@ public class CategoriesActivity extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
 	
+	private int categoryIdToInt(int id) {
+		int category;
+		switch (id) {
+		    case (R.id.bus):
+		        category = 2;
+		    break;
+		    case (R.id.toilet):
+		        category = 1;
+		    break;
+		    case (R.id.traffic_lights):
+		        category = 0;
+		    break;
+		    case (R.id.somewhere):
+		        category = 3;
+		    break;
+		    default:
+		    	category = -1;
+	    }
+		return category;
+	}
+	
 	public void playGame(View view) {
-		//startService(new Intent(getBaseContext(), GameController.class).putExtra("category", 1));
-    	Intent my_intent = new Intent(CategoriesActivity.this, Labyrinth.class);
-    	startActivity(my_intent);
+		int gameCategory = categoryIdToInt(view.getId());
+		Intent gameIntent = new Intent(this, categories.selectGame(gameCategory, null));
+        
+        gameIntent.putExtra("category", gameCategory);
+        gameIntent.putExtra("gameTime", categories.gameTime(gameCategory));
+        
+    	startActivity(gameIntent);
     }
 	
 	public void onStop() {
 		super.onStop();
-		//stopService(new Intent(getBaseContext(), GameController.class));
 	}
 }
