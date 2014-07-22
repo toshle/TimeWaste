@@ -38,7 +38,7 @@ public class DrinkFarm extends GameActivity {
 		super.onCreateEngineOptions();
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR, new FillResolutionPolicy(), camera);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
 	}
 	
 	@Override
@@ -60,20 +60,20 @@ public class DrinkFarm extends GameActivity {
 				}
 			});
 			
-			ITexture bubble = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
-				@Override
-				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/drinkfarm/png/bubble.png");
-				}
-			});
+//			ITexture bubble = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+//				@Override
+//				public InputStream open() throws IOException {
+//					return context.getAssets().open("gfx/drinkfarm/png/bubble.png");
+//				}
+//			});
 			
 			machine.load();
 			cup.load();
-			bubble.load();
+			//bubble.load();
 			
 		    textures.put("machine", TextureRegionFactory.extractFromTexture(machine));
 		    textures.put("cup", TextureRegionFactory.extractFromTexture(cup));
-		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
+		    //textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
 		} catch (IOException e) {
 			Debug.e(e);
 		}

@@ -8,6 +8,7 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
+import com.timewaste.games.labyrinth.Labyrinth;
 import com.timewaste.games.shoot.Shoot;
 import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.games.drinkfarm.DrinkFarm;
@@ -54,6 +55,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 		categories[0].add(TicTacToe.class);
 		categories[0].add(Shoot.class);
 		categories[0].add(DrinkFarm.class);
+		categories[0].add(Labyrinth.class);
+
 		
 		context = this;
 		// TODO Auto-generated method stub

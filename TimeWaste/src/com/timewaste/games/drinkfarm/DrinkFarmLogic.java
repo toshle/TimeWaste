@@ -36,24 +36,24 @@ public class DrinkFarmLogic {
 		};
 	}
 	
-	private Sprite set_bubble_logic(){
-		return new Sprite(0, 0, textures.get("bubble"), game_instance.getVertexBufferObjectManager()) {
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
-				return true;
-			}
-		};		
-	}
+//	private Sprite set_bubble_logic(){
+//		return new Sprite(0, 0, textures.get("bubble"), game_instance.getVertexBufferObjectManager()) {
+//			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+//				this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);
+//				return true;
+//			}
+//		};		
+//	}
 	
 	private void set_ground_images(Scene a_scene) {      
 		float current_y = 0;
 		float current_x = 0;
 		
 		game_cup = set_cup_logic();
-		game_bubble = set_bubble_logic();
+		//game_bubble = set_bubble_logic();
 		
 		game_cup.setPosition(current_x, current_y);
-		game_bubble.setPosition(current_x, current_y);
+		//game_bubble.setPosition(current_x, current_y);
 		
 		a_scene.registerTouchArea(game_cup);
 	}

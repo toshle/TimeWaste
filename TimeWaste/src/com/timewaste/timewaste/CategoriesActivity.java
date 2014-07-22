@@ -1,5 +1,7 @@
 package com.timewaste.timewaste;
 
+import com.timewaste.games.drinkfarm.DrinkFarm;
+import com.timewaste.games.labyrinth.Labyrinth;
 import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.timewaste.R;
 
@@ -34,7 +36,7 @@ public class CategoriesActivity extends Activity {
 	
 	public void playGame(View view) {
 		//startService(new Intent(getBaseContext(), GameController.class).putExtra("category", 1));
-    	Intent my_intent = new Intent(CategoriesActivity.this, TicTacToe.class);
+    	Intent my_intent = new Intent(CategoriesActivity.this, Labyrinth.class);
     	startActivity(my_intent);
     }
 	
