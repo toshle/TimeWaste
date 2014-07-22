@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.timewaste.games.drinkfarm.DrinkFarm;
 import com.timewaste.games.labyrinth.Labyrinth;
+import com.timewaste.games.shitmageddon.Shitmageddon;
 import com.timewaste.games.shoot.Shoot;
 import com.timewaste.games.tictactoe.TicTacToe;
 
@@ -25,6 +26,7 @@ public class Categories {
 		categories[0].add(Shoot.class);
 		categories[0].add(DrinkFarm.class);
 		categories[0].add(Labyrinth.class);
+		categories[3].add(Shitmageddon.class);
 	}
 	
 	public Class<?> selectGame(int category, Class<?> current) {

@@ -29,15 +29,25 @@ import com.timewaste.timewaste.GameActivity;
 
 public class Shitmageddon extends GameActivity {
 
-	private static final int CAMERA_WIDTH = 720;
-	private static final int CAMERA_HEIGHT = 480;
+	private int CAMERA_WIDTH = 720;
+	private int CAMERA_HEIGHT = 480;
 
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Music gameMusic;
-
+	
+	private int screen_width() {
+		return getResources().getDisplayMetrics().widthPixels;
+	}
+	
+	private int screen_height() {
+		return getResources().getDisplayMetrics().heightPixels;
+	}
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		CAMERA_WIDTH = screen_width();
+		CAMERA_HEIGHT = screen_height();
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
 		

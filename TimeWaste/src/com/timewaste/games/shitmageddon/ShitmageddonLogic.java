@@ -12,16 +12,12 @@ import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
-import org.andengine.opengl.texture.ITexture;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.util.TextUtils;
 
 import com.timewaste.timewaste.GameActivity;
 
@@ -29,7 +25,6 @@ import android.graphics.Color;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -43,6 +38,10 @@ public class ShitmageddonLogic {
 	
 	private int screen_width() {
 		return game_instance.getResources().getDisplayMetrics().widthPixels;
+	}
+	
+	private int screen_height() {
+		return game_instance.getResources().getDisplayMetrics().heightPixels;
 	}
 	
 	private void speed_toast (final String message) {
@@ -96,7 +95,7 @@ public class ShitmageddonLogic {
 	
 	private void randomize_shit_location() {
 		Random random_number = new Random(System.currentTimeMillis());
-		shit.setPosition(random_number.nextInt(600), 0);
+		shit.setPosition(random_number.nextInt(screen_width()), 0);
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -137,7 +136,7 @@ public class ShitmageddonLogic {
 		            	randomize_shit_location();
 		            }
 		            //If you miss the shit
-		            if(shit.getY() == 480 - shit.getHeight()) {
+		            if(shit.getY() > screen_height() - shit.getHeight()) {
 		            	change_score(-200);
 		            	randomize_shit_location();
 		            }
@@ -152,7 +151,7 @@ public class ShitmageddonLogic {
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {       
 		this.toilet = set_image_logic();
-		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, 390);
+		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, screen_height() - this.toilet.getHeight());
 		a_scene.registerTouchArea(this.toilet);
 		a_scene.attachChild(this.toilet);
 		

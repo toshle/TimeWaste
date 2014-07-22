@@ -95,6 +95,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 
 	@Override
 	public void onBackPressed() {
+		finalization();
 		Intent dialogIntent = new Intent(context, CategoriesActivity.class);
 
 		context.startActivity(dialogIntent);
