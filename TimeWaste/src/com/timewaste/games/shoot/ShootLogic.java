@@ -34,12 +34,16 @@ public class ShootLogic {
 	
 	//Fields
 	private Sprite ground[] = new Sprite[IMAGES_COUNT];
-	private GameActivity game_instance;
+	private Shoot game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	
 	private float screen_width() {
 		return game_instance.getResources().getDisplayMetrics().widthPixels;
+	}
+	
+	private float screen_height() {
+		return game_instance.cameraHeight();
 	}
 	
 	private void show_score() {
@@ -109,8 +113,9 @@ public class ShootLogic {
 	}
 	
 	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_environment(Scene a_scene) {       
+	private void set_environment(Scene a_scene) {      
 		float current_x = 45, current_y = 130, separator_x = 280, separator_y = 188;
+		
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
 				current_x = 45;
@@ -129,7 +134,7 @@ public class ShootLogic {
 		randomize_image();
 	}
 	
-	public ShootLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	public ShootLogic(Shoot game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		set_environment(a_scene);

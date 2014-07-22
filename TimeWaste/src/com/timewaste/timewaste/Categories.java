@@ -21,11 +21,11 @@ public class Categories {
 		categories[1] = new ArrayList<Class<?>>();
 		categories[2] = new ArrayList<Class<?>>();
 		categories[3] = new ArrayList<Class<?>>();
-		
-		categories[0].add(TicTacToe.class);
-		categories[0].add(Shoot.class);
-		categories[0].add(DrinkFarm.class);
-		categories[1].add(Labyrinth.class);
+
+		//categories[0].add(TicTacToe.class);
+		categories[0].add(Labyrinth.class);
+		categories[2].add(Shoot.class);
+		categories[1].add(DrinkFarm.class);
 		categories[3].add(Shitmageddon.class);
 	}
 	

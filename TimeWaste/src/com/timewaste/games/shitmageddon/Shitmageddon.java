@@ -1,7 +1,6 @@
 package com.timewaste.games.shitmageddon;
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,33 +23,30 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import android.content.Context;
+import android.view.Display;
+import android.view.Surface;
 
 import com.timewaste.timewaste.GameActivity;
 
 public class Shitmageddon extends GameActivity {
 
-	private int CAMERA_WIDTH = 720;
-	private int CAMERA_HEIGHT = 480;
-
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Music gameMusic;
-	
-	private int screen_width() {
-		return getResources().getDisplayMetrics().widthPixels;
-	}
-	
-	private int screen_height() {
-		return getResources().getDisplayMetrics().heightPixels;
-	}
-	
+
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		CAMERA_WIDTH = screen_width();
-		CAMERA_HEIGHT = screen_height();
+		if(screen_height() < screen_width()) {
+			CAMERA_WIDTH = screen_width();
+			CAMERA_HEIGHT = screen_height();
+		} else {
+			CAMERA_WIDTH = screen_height();
+			CAMERA_HEIGHT = screen_width();
+		}
+		
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
-		
+
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
 	}

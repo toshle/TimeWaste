@@ -31,17 +31,17 @@ import android.widget.Toast;
 public class ShitmageddonLogic {
 	//Fields
 	private Sprite toilet, shit;
-	private GameActivity game_instance;
+	private Shitmageddon game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	private int speed, current_speed;
 	
 	private int screen_width() {
-		return game_instance.getResources().getDisplayMetrics().widthPixels;
+		return game_instance.cameraWidth();
 	}
 	
 	private int screen_height() {
-		return game_instance.getResources().getDisplayMetrics().heightPixels;
+		return game_instance.cameraHeight();
 	}
 	
 	private void speed_toast (final String message) {
@@ -151,7 +151,7 @@ public class ShitmageddonLogic {
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {       
 		this.toilet = set_image_logic();
-		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, screen_height() - this.toilet.getHeight());
+		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, screen_height() - this.toilet.getHeight() + 10);
 		a_scene.registerTouchArea(this.toilet);
 		a_scene.attachChild(this.toilet);
 		
@@ -162,7 +162,7 @@ public class ShitmageddonLogic {
 		catching_shit_logic(a_scene);
 	}
 	
-	public ShitmageddonLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	public ShitmageddonLogic(Shitmageddon game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		this.speed = 5;

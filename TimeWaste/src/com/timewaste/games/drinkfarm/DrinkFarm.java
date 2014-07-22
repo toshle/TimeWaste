@@ -30,8 +30,8 @@ import com.timewaste.timewaste.GameActivity;
 
 public class DrinkFarm extends GameActivity {
 
-	private static final int CAMERA_WIDTH = 720;
-	private static final int CAMERA_HEIGHT = 480;
+	private int CAMERA_WIDTH;
+	private int CAMERA_HEIGHT;
 	private static Camera camera;
 	private static Scene scene;
 	private LinkedList TargetsToBeAdded;
@@ -41,9 +41,11 @@ public class DrinkFarm extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		CAMERA_WIDTH = screen_width();
+		CAMERA_HEIGHT = screen_height();
 		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR, new FillResolutionPolicy(), camera);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
 	}
 	
 	@Override
@@ -120,6 +122,7 @@ public class DrinkFarm extends GameActivity {
 		/* Create the background and add it to the scene. */
 		final Sprite background_image = new Sprite(0, 0, this.textures.get("machine"), this.getVertexBufferObjectManager()); 
 		background_image.setWidth(CAMERA_WIDTH);
+		background_image.setHeight(CAMERA_HEIGHT);
 		
 		scene.attachChild(background_image);
 		

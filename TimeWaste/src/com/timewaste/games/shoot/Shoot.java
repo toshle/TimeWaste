@@ -26,14 +26,14 @@ import com.timewaste.timewaste.GameActivity;
 
 public class Shoot extends GameActivity {
 
-	private static final int CAMERA_WIDTH = 720;
-	private static final int CAMERA_HEIGHT = 480;
-
+	
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		CAMERA_WIDTH = 720;
+		CAMERA_HEIGHT = 480;
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);

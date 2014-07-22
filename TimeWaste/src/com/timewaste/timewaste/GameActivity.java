@@ -28,6 +28,26 @@ public class GameActivity extends SimpleBaseGameActivity {
 	private Timer timeCallback;
 
 	private int timeLeft;
+	
+
+	protected int CAMERA_WIDTH;
+	protected int CAMERA_HEIGHT;
+	
+	public int cameraWidth() {
+		return CAMERA_WIDTH;
+	}
+	
+	public int cameraHeight() {
+		return CAMERA_HEIGHT;
+	}
+	
+	protected int screen_width() {
+		return getResources().getDisplayMetrics().widthPixels;
+	}
+	
+	protected int screen_height() {
+		return getResources().getDisplayMetrics().heightPixels;
+	}
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -96,9 +116,9 @@ public class GameActivity extends SimpleBaseGameActivity {
 	@Override
 	public void onBackPressed() {
 		finalization();
-		Intent dialogIntent = new Intent(context, CategoriesActivity.class);
+		/*Intent dialogIntent = new Intent(context, CategoriesActivity.class);
 
-		context.startActivity(dialogIntent);
+		context.startActivity(dialogIntent);*/
 	}
 
 	@Override
