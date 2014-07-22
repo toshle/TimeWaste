@@ -34,12 +34,16 @@ public class ShootLogic {
 	
 	//Fields
 	private Sprite ground[] = new Sprite[IMAGES_COUNT];
-	private GameActivity game_instance;
+	private Shoot game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	
 	private float screen_width() {
-		return game_instance.getResources().getDisplayMetrics().widthPixels;
+		return game_instance.cameraWidth();
+	}
+	
+	private float screen_height() {
+		return game_instance.cameraHeight();
 	}
 	
 	private void show_score() {
@@ -109,11 +113,18 @@ public class ShootLogic {
 	}
 	
 	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_environment(Scene a_scene) {       
-		float current_x = 45, current_y = 130, separator_x = 280, separator_y = 188;
+	private void set_environment(Scene a_scene) {      
+		Sprite template = new Sprite(0, 0, textures.get("empty"), game_instance.getVertexBufferObjectManager());
+		float leftMargin = screen_width() / template.getWidth() * 8.5f,
+			  topMargin = template.getHeight() * 1.6f;
+		float current_x = leftMargin,
+			  current_y = topMargin,
+			  separator_x = template.getWidth() * 5.3f,
+			  separator_y = template.getHeight() * 2f;
+		
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
-				current_x = 45;
+				current_x = leftMargin;
 				current_y += separator_y;
 			}
 			ground[i] = set_image_logic(); 
@@ -121,15 +132,13 @@ public class ShootLogic {
 			a_scene.registerTouchArea(ground[i]);
 			a_scene.attachChild(ground[i]);
 			current_x += separator_x;
-			separator_x = 270;
+			//separator_x = 270;
 		}
-		ground[4].setPosition(ground[4].getX() + 15, ground[4].getY());
-		ground[2].setPosition(ground[2].getX(), ground[2].getY() + 1);
 		set_fonts(a_scene);
 		randomize_image();
 	}
 	
-	public ShootLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	public ShootLogic(Shoot game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		set_environment(a_scene);
