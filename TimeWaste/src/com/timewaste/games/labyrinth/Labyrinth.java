@@ -127,8 +127,8 @@ public class Labyrinth extends GameActivity {
 	
 	private void update_labyrinth(int x, int y, int new_x, int new_y, Sprite[][] matrix, Scene scene) {
 		if (x != new_x || y != new_y) {
-			matrix[x][y] = 	new Sprite((x-1)*this.textures.get("grass").getWidth(), (y-1)*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
-			matrix[new_x][new_y] = 	new Sprite((new_x-1)*this.textures.get("face_box").getWidth(), (new_y-1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+			matrix[x][y] = 	new Sprite(x*this.textures.get("grass").getWidth(), y*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
+			matrix[new_x][new_y] = 	new Sprite(new_x*this.textures.get("face_box").getWidth(), new_y*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
 			scene.attachChild(matrix[x][y]);
 			scene.attachChild(matrix[new_x][new_y]);
 		}
@@ -140,13 +140,13 @@ public class Labyrinth extends GameActivity {
 				int status = moving_object.get_maze().game_maze.get(new Point(i, j));
 
 				if (status == 0)
-					matrix[i][j] = new Sprite((i-1)*this.textures.get("grass").getWidth(), (j-1)*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite(i*this.textures.get("grass").getWidth(), j*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
 				else if (status == 1)
-					matrix[i][j] = new Sprite((i-1)*this.textures.get("wall").getWidth(), (j-1)*this.textures.get("wall").getHeight(), this.textures.get("wall"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite(i*this.textures.get("wall").getWidth(), j*this.textures.get("wall").getHeight(), this.textures.get("wall"), this.getVertexBufferObjectManager());
 				else if (status == 2)
-					matrix[i][j] = new Sprite((i-1)*this.textures.get("face_box").getWidth(), (j-1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite(i*this.textures.get("face_box").getWidth(), j*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
 				else if (status == 3)
-					matrix[i][j] = new Sprite((i-1)*this.textures.get("face_box").getWidth(), (j-1)*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite(i*this.textures.get("face_box").getWidth(), j*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
 				
 				scene.attachChild(matrix[i][j]);
 			}
