@@ -45,10 +45,6 @@ public class ShitmageddonLogic {
 		return game_instance.getResources().getDisplayMetrics().widthPixels;
 	}
 	
-	private int screen_height() {
-		return game_instance.getResources().getDisplayMetrics().heightPixels;
-	}
-	
 	private void speed_toast (final String message) {
 		game_instance.runOnUiThread(new Runnable() {
 		    @Override
@@ -100,7 +96,7 @@ public class ShitmageddonLogic {
 	
 	private void randomize_shit_location() {
 		Random random_number = new Random(System.currentTimeMillis());
-		shit.setPosition(random_number.nextInt(screen_width() - 2 * (int)shit.getWidth()), 0);
+		shit.setPosition(random_number.nextInt(600), 0);
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -141,7 +137,7 @@ public class ShitmageddonLogic {
 		            	randomize_shit_location();
 		            }
 		            //If you miss the shit
-		            if(shit.getY() == screen_height() - shit.getHeight()) {
+		            if(shit.getY() == 480 - shit.getHeight()) {
 		            	change_score(-200);
 		            	randomize_shit_location();
 		            }
@@ -156,7 +152,7 @@ public class ShitmageddonLogic {
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {       
 		this.toilet = set_image_logic();
-		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, 390);//screen_height() - this.toilet.getHeight() + 10);
+		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, 390);
 		a_scene.registerTouchArea(this.toilet);
 		a_scene.attachChild(this.toilet);
 		
