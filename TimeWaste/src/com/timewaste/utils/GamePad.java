@@ -75,28 +75,32 @@ public abstract class GamePad {
 	private void attach_sprites(SimpleBaseGameActivity game_instance, Scene scene, float pX, float pY, int width, int height) {
 		left_arrow = new Sprite(pX, pY + height/6.5f, this.arrows.get("left_arrow"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				action_left_arrow();
+				if (pSceneTouchEvent.isActionUp())
+					action_left_arrow();
 
 				return true;
 			}
 		};
 		right_arrow = new Sprite(pX + width/6.5f, pY + height/6.5f, this.arrows.get("right_arrow"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				action_right_arrow();
+				if (pSceneTouchEvent.isActionUp())	
+					action_right_arrow();
 
 				return true;
 			}
 		};
 		up_arrow = new Sprite(pX + width/11, pY, this.arrows.get("up_arrow"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				action_up_arrow();
+				if (pSceneTouchEvent.isActionUp())
+					action_up_arrow();
 
 				return true;
 			}
 		};
 		down_arrow = new Sprite(pX + width/11, pY + height/3.8f, this.arrows.get("down_arrow"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				action_down_arrow();
+				if (pSceneTouchEvent.isActionUp())
+					action_down_arrow();
 
 				return true;
 			}
