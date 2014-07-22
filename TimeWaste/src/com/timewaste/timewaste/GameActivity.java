@@ -1,96 +1,80 @@
 package com.timewaste.timewaste;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
-import com.timewaste.games.labyrinth.Labyrinth;
-import com.timewaste.games.shoot.Shoot;
-import com.timewaste.games.tictactoe.TicTacToe;
-import com.timewaste.games.drinkfarm.DrinkFarm;
 import com.timewaste.utils.Timer;
 import com.timewaste.utils.Timer.ITimerCallback;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.widget.Toast;
 
-/**
- * (c) 2010 Nicolas Gramlich 
- * (c) 2011 Zynga Inc.
- * 
- * @author Nicolas Gramlich
- * @since 11:54:51 - 03.04.2010
- */
 public class GameActivity extends SimpleBaseGameActivity {
-	
 
-	private int mInterval = 10000; // 10 seconds by default, can be changed later
+	private int mInterval; 
+	
 	private Scene mScene;
 	
 	private Context context;
 	
-
-	private int category;
+	private Categories categories;
 	
-	private Random randomizer;
+	private int gameCategory;
 	
-	private List<Class<?>>[] categories;
+	private Class<?> currentGame;
+	
+	private Timer timeCallback;
+	
+	private int timeLeft;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() {
-		randomizer = new Random();
-		categories = new List[4];
-		categories[0] = new ArrayList<Class<?>>();
-		categories[1] = new ArrayList<Class<?>>();
-		categories[2] = new ArrayList<Class<?>>();
-		categories[3] = new ArrayList<Class<?>>();
-		
-		categories[0].add(TicTacToe.class);
-		categories[0].add(Shoot.class);
-		categories[0].add(DrinkFarm.class);
-		categories[0].add(Labyrinth.class);
-
-		
+		categories = new Categories();
+		gameCategory = getIntent().getIntExtra("category", 0);
+		currentGame = getIntent().getClass();
+		mInterval = getIntent().getIntExtra("gameTime", 0);
 		context = this;
-		// TODO Auto-generated method stub
+		
+		if(getIntent().getBooleanExtra("nextGame", false) == true) {
+			Toast.makeText(context, "Time's up! Next game.", Toast.LENGTH_LONG).show();
+		}
+		
+		timeCallback = new Timer(1f, new ITimerCallback() {
+			int t = mInterval;
+			@Override
+			public void onTick() {
+				if(t > 0)
+					timeLeft = t--;
+				else {
+					finalization();
+					loadNextGame();
+				}
+			}
+		});
+		
 		return null;
+	}
+	
+	public int timeLeft() {
+		return timeLeft;
 	}
 
 	@Override
 	protected void onCreateResources() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected Scene onCreateScene() {
-		
 		return null;
 	}
 	
-	private Timer timeCallback = new Timer(1f, new ITimerCallback() {
-		int t = 30;
-		@Override
-		public void onTick() {
-			if(t > 0)
-				t -= 1;
-			else {
-				finalization();
-				loadNextGame();
-			}
-		}
-	});
-	
 	protected void runCycle(Scene scene) {
-		mScene = scene;
-		mScene.registerUpdateHandler(timeCallback);
+		if(mInterval != -1) {
+			mScene = scene;
+			mScene.registerUpdateHandler(timeCallback);
+		}
 	}
 	
 	public void finalization() {
@@ -100,18 +84,19 @@ public class GameActivity extends SimpleBaseGameActivity {
 	}
 	
 	public void loadNextGame() {
-		//Toast.makeText(context, "Next game. Begin!", Toast.LENGTH_SHORT).show();
-        Intent dialogIntent = new Intent(context, categories[category].get(randomizer.nextInt(categories[category].size())));
-		//dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-		context.startActivity(dialogIntent);
+        Intent gameIntent = new Intent(context, categories.selectGame(gameCategory, currentGame));
+        
+        gameIntent.putExtra("category", gameCategory);
+        gameIntent.putExtra("gameTime", categories.gameTime(gameCategory));
+        gameIntent.putExtra("nextGame", true);
+        
+		context.startActivity(gameIntent);
 	}
 	
 	@Override
 	public void onBackPressed() {
 		Intent dialogIntent = new Intent(context, CategoriesActivity.class);
-		//dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+		
 		context.startActivity(dialogIntent);
 	}
 	
