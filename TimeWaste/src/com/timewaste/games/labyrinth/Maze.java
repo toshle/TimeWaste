@@ -42,27 +42,27 @@ public class Maze {
 			return;
 		
 		if ((bottom-top) - (right-left) >= 0) {
-            int y = randInt(top, bottom + 1);
+            int y = randInt(top, bottom);
             while (y % 2 != 0)
-            	y = randInt(top, bottom + 1);
+            	y = randInt(top, bottom);
             for (int x = left; x <= right; x++)
                 this.game_maze.put(new Point(x, y), 1);
-            int path = randInt(left, right + 1);
+            int path = randInt(left, right);
             while (path % 2 != 0)
-            	path = randInt(left, right + 1);
+            	path = randInt(left, right);
             this.game_maze.put(new Point(path, y), 0);
             this.recursive_division_maze_generation(left, right, top, y - 1);
             this.recursive_division_maze_generation(left, right, y + 1, bottom);
 		}
 		else {
-			int x = randInt(left, right + 1);
+			int x = randInt(left, right);
             while (x % 2 == 0)
-            	x = randInt(left, right + 1);
+            	x = randInt(left, right);
             for (int y = top; y <= bottom; y++)
                 this.game_maze.put(new Point(x, y), 1);
-            int path = randInt(top, bottom + 1);
+            int path = randInt(top, bottom);
             while (path % 2 == 0)
-            	path = randInt(top, bottom + 1);
+            	path = randInt(top, bottom);
             this.game_maze.put(new Point(x, path), 0);
             this.recursive_division_maze_generation(left, x - 1, top, bottom);
             this.recursive_division_maze_generation(x + 1, right, top, bottom);
