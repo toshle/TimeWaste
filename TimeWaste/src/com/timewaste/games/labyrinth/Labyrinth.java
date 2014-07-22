@@ -90,7 +90,7 @@ public class Labyrinth extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.52f, 0.71f, 0.44f));
 		
-		Maze maze = new Maze(22, 15);
+		Maze maze = new Maze(33, 23);
 		maze.recursive_division_maze_generation(1, maze.get_width(), 1, maze.get_length());
 		final MovingObject moving_object = new MovingObject(maze);
 		final Sprite[][] matrix = new Sprite[maze.get_width() + 1][maze.get_length() + 1];
@@ -150,12 +150,12 @@ public class Labyrinth extends GameActivity {
 	}
 	
 	private void visualize_labyrinth(Scene scene, Sprite[][] matrix, MovingObject moving_object) {
+		float width = CAMERA_WIDTH / moving_object.get_maze().get_width();
+		float length = CAMERA_HEIGHT / moving_object.get_maze().get_length();
+
 		for (int j = 1; j <= moving_object.get_maze().get_length(); j++) {
 			for (int i = 1; i <= moving_object.get_maze().get_width(); i++) {
 				int status = moving_object.get_maze().game_maze.get(new Point(i, j));
-				
-				float width = CAMERA_WIDTH / moving_object.get_maze().get_width();
-				float length = CAMERA_HEIGHT / moving_object.get_maze().get_length();
 
 				if (status == 0)
 					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("grass"), this.getVertexBufferObjectManager());
