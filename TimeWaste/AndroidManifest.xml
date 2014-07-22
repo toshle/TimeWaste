@@ -45,6 +45,14 @@
             android:label="Labyrinth"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
+        
+ 		<activity
+            android:launchMode="singleTop"
+            android:name="com.timewaste.games.shitmageddon.Shitmageddon"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Shitmageddon"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
+        </activity>
 
 		<activity
             android:name="com.timewaste.games.drinkfarm.DrinkFarm"

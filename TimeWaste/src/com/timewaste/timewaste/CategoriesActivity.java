@@ -1,6 +1,7 @@
 package com.timewaste.timewaste;
 
 import com.timewaste.games.labyrinth.Labyrinth;
+import com.timewaste.games.shitmageddon.Shitmageddon;
 import com.timewaste.games.shoot.Shoot;
 import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.timewaste.R;
@@ -58,7 +59,7 @@ public class CategoriesActivity extends Activity {
 		return category;
 	}
 	
-	/*
+	
 	public void playGame(View view) {
 		int gameCategory = categoryIdToInt(view.getId());
 		Intent gameIntent = new Intent(this, categories.selectGame(gameCategory, null));
@@ -67,17 +68,18 @@ public class CategoriesActivity extends Activity {
         gameIntent.putExtra("gameTime", categories.gameTime(gameCategory));
         
     	startActivity(gameIntent);
-    }*/
-	
+    }
+	/*
 	public void playGame(View view) {
 		  
-		  Intent gameIntent = new Intent(this, Shoot.class);
+		  Intent gameIntent = new Intent(this, Shitmageddon.class);
 		        
 		        gameIntent.putExtra("category", 3);
 		        gameIntent.putExtra("gameTime", -1);
 		        
 		        startActivity(gameIntent);
 		    }
+	*/
 	
 	public void onStop() {
 		super.onStop();
