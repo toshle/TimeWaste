@@ -39,7 +39,7 @@ public class ShootLogic {
 	private Text score;
 	
 	private float screen_width() {
-		return game_instance.cameraWidth();
+		return game_instance.getResources().getDisplayMetrics().widthPixels;
 	}
 	
 	private float screen_height() {
@@ -114,17 +114,11 @@ public class ShootLogic {
 	
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {      
-		Sprite template = new Sprite(0, 0, textures.get("empty"), game_instance.getVertexBufferObjectManager());
-		float leftMargin = screen_width() / template.getWidth() * 8.5f,
-			  topMargin = template.getHeight() * 1.6f;
-		float current_x = leftMargin,
-			  current_y = topMargin,
-			  separator_x = template.getWidth() * 5.3f,
-			  separator_y = template.getHeight() * 2f;
+		float current_x = 45, current_y = 130, separator_x = 280, separator_y = 188;
 		
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
-				current_x = leftMargin;
+				current_x = 45;
 				current_y += separator_y;
 			}
 			ground[i] = set_image_logic(); 
@@ -132,8 +126,10 @@ public class ShootLogic {
 			a_scene.registerTouchArea(ground[i]);
 			a_scene.attachChild(ground[i]);
 			current_x += separator_x;
-			//separator_x = 270;
+			separator_x = 270;
 		}
+		ground[4].setPosition(ground[4].getX() + 15, ground[4].getY());
+		ground[2].setPosition(ground[2].getX(), ground[2].getY() + 1);
 		set_fonts(a_scene);
 		randomize_image();
 	}

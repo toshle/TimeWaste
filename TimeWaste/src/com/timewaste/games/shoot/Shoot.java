@@ -32,8 +32,8 @@ public class Shoot extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		CAMERA_WIDTH = screen_width();
-		CAMERA_HEIGHT = screen_height();
+		CAMERA_WIDTH = 720;
+		CAMERA_HEIGHT = 480;
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -130,12 +130,7 @@ public class Shoot extends GameActivity {
 
 		/* Create the background and add it to the scene. */
 		final Sprite ground_image = new Sprite(0, 0, this.textures.get("building"), this.getVertexBufferObjectManager()); 
-		if(ground_image.getWidth() < CAMERA_WIDTH) {
-			ground_image.setWidth(CAMERA_WIDTH);
-		}
-		if(ground_image.getHeight() < CAMERA_HEIGHT) {
-			ground_image.setHeight(CAMERA_HEIGHT);
-		}
+		ground_image.setWidth(CAMERA_WIDTH);
 		scene.attachChild(ground_image);
 		@SuppressWarnings("unused")
 		ShootLogic logic = new ShootLogic(this, scene, this.textures);
