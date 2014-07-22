@@ -3,7 +3,9 @@ package com.timewaste.games.drinkfarm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
+import java.util.LinkedList;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
@@ -30,15 +32,18 @@ public class DrinkFarm extends GameActivity {
 
 	private static final int CAMERA_WIDTH = 720;
 	private static final int CAMERA_HEIGHT = 480;
-
+	private static Camera camera;
+	private static Scene scene;
+	private LinkedList TargetsToBeAdded;
+	
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+		return new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR, new FillResolutionPolicy(), camera);
 	}
 	
 	@Override
@@ -79,12 +84,37 @@ public class DrinkFarm extends GameActivity {
 		}
 	}
 	
+	public void addTarget() {
+	    Random rand = new Random();
+	 
+	    int x = (int) camera.getWidth() + CAMERA_WIDTH;
+	    int minY = CAMERA_HEIGHT;
+	    int maxY = (int) (camera.getHeight() - CAMERA_HEIGHT);
+	    int rangeY = maxY - minY;
+	    int y = rand.nextInt(rangeY) + minY;
+	 
+	    Sprite target = new Sprite(x, y, textures.get("cup"), getVertexBufferObjectManager());
+	    scene.attachChild(target);
+	 
+	    int minDuration = 2;
+	    int maxDuration = 4;
+	    int rangeDuration = maxDuration - minDuration;
+	    int actualDuration = rand.nextInt(rangeDuration) + minDuration;
+	 
+	    //MoveXModifier mod = new MoveXModifier(actualDuration, target.getX(),
+	      //  -target.getWidth());
+	    //target.registerEntityModifier(mod.deepCopy());
+	 
+	    TargetsToBeAdded.add(target);
+	 
+	}
+	
 	@Override
 	public Scene onCreateScene() {
 		super.onCreateScene();
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 
-		final Scene scene = new Scene();
+		scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
 
 		/* Create the background and add it to the scene. */
@@ -92,6 +122,8 @@ public class DrinkFarm extends GameActivity {
 		background_image.setWidth(CAMERA_WIDTH);
 		
 		scene.attachChild(background_image);
+		
+		TargetsToBeAdded = new LinkedList();
 		
 		DrinkFarmLogic logic = new DrinkFarmLogic(this, scene, this.textures);
 		logic.render(scene);

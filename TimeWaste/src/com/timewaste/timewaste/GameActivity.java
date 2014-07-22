@@ -54,7 +54,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		
 		categories[0].add(TicTacToe.class);
 		categories[0].add(Shoot.class);
-		categories[0].add(DrinkFarm.class);
+		//categories[0].add(DrinkFarm.class);
 		categories[0].add(Labyrinth.class);
 
 		
