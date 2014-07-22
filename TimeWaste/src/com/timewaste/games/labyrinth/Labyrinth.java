@@ -21,8 +21,8 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import android.content.Context;
+import android.graphics.Point;
 
-import com.timewaste.games.shoot.ShootLogic;
 import com.timewaste.timewaste.GameActivity;
 import com.timewaste.utils.GamePad;
 
@@ -52,10 +52,26 @@ public class Labyrinth extends GameActivity {
 					return context.getAssets().open("gfx/labyrinth/face_box.png");
 				}
 			});
+			ITexture grass = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/labyrinth/background_grass.png");
+				}
+			});
+			ITexture wall = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/labyrinth/snake_tailpart.png");
+				}
+			});
 		
 			face_box.load();
+			grass.load();
+			wall.load();
 			
 			textures.put("face_box", TextureRegionFactory.extractFromTexture(face_box));
+			textures.put("grass", TextureRegionFactory.extractFromTexture(grass));
+			textures.put("wall", TextureRegionFactory.extractFromTexture(wall));
 		} catch (IOException e) {
 			Debug.e(e);
 		}
@@ -68,24 +84,70 @@ public class Labyrinth extends GameActivity {
 
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
-		final Sprite face_box = new Sprite(100, 100, this.textures.get("face_box"), this.getVertexBufferObjectManager());
-		scene.attachChild(face_box);
+		
+		Maze maze = new Maze(10, 10);
+		maze.recursive_division_maze_generation(1, 10, 1, 10);
+		final MovingObject moving_object = new MovingObject(maze);
+		final Sprite[][] matrix = new Sprite[maze.get_length() + 1][maze.get_width() + 1];
+		
+		visualize_labyrinth(scene, matrix, moving_object);
 
 		GamePad pad = new GamePad(this, scene, 0, CAMERA_HEIGHT/1.8f, CAMERA_WIDTH, CAMERA_HEIGHT) {
 			public void action_left_arrow() {
-				face_box.setPosition(200, 200);
+				int x = moving_object.get_x();
+				int y = moving_object.get_y();
+				moving_object.move_left();
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
 			}
 			public void action_right_arrow() {
-				face_box.setPosition(100, 100);
+				int x = moving_object.get_x();
+				int y = moving_object.get_y();
+				moving_object.move_right();
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
 			}
 			public void action_up_arrow() {
-				
+				int x = moving_object.get_x();
+				int y = moving_object.get_y();
+				moving_object.move_up();
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
 			}
 			public void action_down_arrow() {
-				
+				int x = moving_object.get_x();
+				int y = moving_object.get_y();
+				moving_object.move_down();
+				update_labyrinth(x, y, moving_object.get_x(), moving_object.get_y(), matrix, scene);
 			}
 		};
+
 		this.runCycle(scene);
 		return scene;
 	}
+	
+	private void update_labyrinth(int x, int y, int new_x, int new_y, Sprite[][] matrix, Scene scene) {
+		if (x != new_x || y != new_y) {
+			matrix[x][y] = 	new Sprite(x*this.textures.get("grass").getWidth(), y*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
+			matrix[new_x][new_y] = 	new Sprite(new_x*this.textures.get("face_box").getWidth(), new_y*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+			scene.attachChild(matrix[x][y]);
+			scene.attachChild(matrix[new_x][new_y]);
+		}
+	}
+	
+	private void visualize_labyrinth(Scene scene, Sprite[][] matrix, MovingObject moving_object) {
+		for (int j = 1; j <= moving_object.get_maze().get_length(); j++)
+			for (int i = 1; i <= moving_object.get_maze().get_width(); i++) {
+				int status = moving_object.get_maze().game_maze.get(new Point(i, j));
+
+				if (status == 0)
+					matrix[i][j] = new Sprite(i*this.textures.get("grass").getWidth(), j*this.textures.get("grass").getHeight(), this.textures.get("grass"), this.getVertexBufferObjectManager());
+				else if (status == 1)
+					matrix[i][j] = new Sprite(i*this.textures.get("wall").getWidth(), j*this.textures.get("wall").getHeight(), this.textures.get("wall"), this.getVertexBufferObjectManager());
+				else if (status == 2)
+					matrix[i][j] = new Sprite(i*this.textures.get("face_box").getWidth(), j*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+				else if (status == 3)
+					matrix[i][j] = new Sprite(i*this.textures.get("face_box").getWidth(), j*this.textures.get("face_box").getHeight(), this.textures.get("face_box"), this.getVertexBufferObjectManager());
+				
+				scene.attachChild(matrix[i][j]);
+			}
+	}
+	
 }

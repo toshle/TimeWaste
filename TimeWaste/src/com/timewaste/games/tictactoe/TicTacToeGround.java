@@ -151,6 +151,7 @@ public class TicTacToeGround {
 			}
 			ground[i] = set_image_logic();
 			ground[i].setPosition(current_x + separator_x * ((i % 3) + 1), current_y + separator_y);
+			a_scene.attachChild(ground[i]);
 			a_scene.registerTouchArea(ground[i]);
 			current_x += textures.get("empty").getWidth();
 		}
@@ -161,11 +162,5 @@ public class TicTacToeGround {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		set_ground_images(a_scene);
-	}
-	
-	public void render(Scene a_scene) {
-		for(int i = 0; i < IMAGES_COUNT; i++) {
-			a_scene.attachChild(ground[i]);
-		}
 	}
 }

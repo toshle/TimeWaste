@@ -103,8 +103,8 @@ public class TicTacToe extends GameActivity {
 		ground_image.setHeight(ground_image.getHeight() - margin * 2);
 		
 		scene.attachChild(ground_image);
+		@SuppressWarnings("unused")
 		TicTacToeGround ground = new TicTacToeGround(this, scene, this.textures);
-		ground.render(scene);
 		
 		return scene;
 	}

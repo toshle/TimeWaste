@@ -131,11 +131,9 @@ public class Shoot extends GameActivity {
 		/* Create the background and add it to the scene. */
 		final Sprite ground_image = new Sprite(0, 0, this.textures.get("building"), this.getVertexBufferObjectManager()); 
 		ground_image.setWidth(CAMERA_WIDTH);
-		
 		scene.attachChild(ground_image);
-		
-		ShootLogic logic = new ShootLogic(this, scene, this.textures, CAMERA_WIDTH, CAMERA_HEIGHT);
-		logic.render(scene);
+		@SuppressWarnings("unused")
+		ShootLogic logic = new ShootLogic(this, scene, this.textures);
 		this.runCycle(scene);
 		return scene;
 	}

@@ -3,13 +3,29 @@ package com.timewaste.games.shoot;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+
+import org.andengine.AndEngine;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.HorizontalAlign;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.util.TextUtils;
+
+import com.timewaste.timewaste.GameActivity;
+
+import android.graphics.Color;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 
 public class ShootLogic {
 	//Constants
@@ -18,30 +34,26 @@ public class ShootLogic {
 	
 	//Fields
 	private Sprite ground[] = new Sprite[IMAGES_COUNT];
-	private SimpleBaseGameActivity game_instance;
+	private GameActivity game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
+	private Text score;
 	
-	private void announce_winner(final int winner) {
+	private float screen_width() {
+		return game_instance.getResources().getDisplayMetrics().widthPixels;
+	}
+	
+	private void show_score() {
 		game_instance.runOnUiThread(new Runnable() {
 		    @Override
 		    public void run() {
 		        //Toast.makeText(TickTackToe.this, message, Toast.LENGTH_SHORT).show();
 		    	AlertDialog.Builder alert = new AlertDialog.Builder(game_instance).
-		        setTitle("Game Ended");
-		    	switch (winner) {
-					case 1:
-						alert.setMessage("You Win!") ;
-						break;
-					case 2:
-						alert.setMessage("Computer Wins!") ;
-						break;
-					default:
-						alert.setMessage("No one wins.") ;
-						break;
-				}
-		        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		        setTitle("Game Ended").
+		        setMessage("Your score is: " + score.getText()).
+		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int id) {
-			        	game_instance.finish();
+			        	game_instance.finalization();
+			        	game_instance.loadNextGame();
 			        }
 		        });
 		    	alert.show();
@@ -56,6 +68,12 @@ public class ShootLogic {
 		setTextureRegion(textures.get(images[random_number.nextInt(IMAGES_COUNT)]));
 	}
 	
+	private void increase_score() {
+		int current_score = Integer.parseInt(this.score.getText().toString());
+		this.score.setText(Integer.toString(current_score + 100));
+		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
+	}
+	
 	//Touching logic.
 	private Sprite set_image_logic(){
 		return new Sprite(0, 0, textures.get("empty"), game_instance.getVertexBufferObjectManager()) {
@@ -63,52 +81,57 @@ public class ShootLogic {
 				if(this.getTextureRegion() != textures.get("empty")) {
 					this.setTextureRegion(textures.get("empty"));
 					randomize_image();
-					//Score++?
+					increase_score();
+					//If timer runs out -> show_score();
 				}	
 				return true;
 			}
 		};
 	}
 	
-	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_ground_images(Scene a_scene, int width, int height) {
-		float device_width  = width;//game_instance.getResources().getDisplayMetrics().widthPixels;
-        float device_height = height;//game_instance.getResources().getDisplayMetrics().heightPixels;
-        
-		float current_x = device_width / 16;
-		float current_y = device_height / 3.7f;
-		float separator_x = device_width / 2.6f, separator_y = device_height / 2.55f;
+	private void set_fonts(Scene a_scene) {
+		Font font = FontFactory.create(game_instance.getFontManager(), game_instance.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, Color.RED);
+		font.load();
+		
+		final Text centerText = 
+				new Text(0, 0, font, "Score", 
+				new TextOptions(HorizontalAlign.CENTER), game_instance.getVertexBufferObjectManager());
+
+		this.score =
+				new Text(0, 0, font, "0", 6,
+				new TextOptions(HorizontalAlign.CENTER), game_instance.getVertexBufferObjectManager());
+		
+		centerText.setPosition((screen_width() - centerText.getWidth()) / 2 - 30, 40);
+		this.score.setPosition((screen_width() - centerText.getWidth()) / 2, 80);
+		
+		a_scene.attachChild(centerText);
+		a_scene.attachChild(this.score);
+	}
 	
+	//Formula to set the ground images. Also registering touch events for every image.
+	private void set_environment(Scene a_scene) {       
+		float current_x = 45, current_y = 130, separator_x = 280, separator_y = 188;
 		for(int i = 0; i < IMAGES_COUNT; i++) {
 			if(i != 0 && (i % 3) == 0) {
-				current_x = device_width / 16;
+				current_x = 45;
 				current_y += separator_y;
 			}
 			ground[i] = set_image_logic(); 
 			ground[i].setPosition(current_x, current_y);
 			a_scene.registerTouchArea(ground[i]);
+			a_scene.attachChild(ground[i]);
 			current_x += separator_x;
-			separator_x = device_width / 2.8f;
+			separator_x = 270;
 		}
-		ground[4].setPosition(ground[4].getX() + separator_x / 12f, ground[4].getY());
-		ground[5].setPosition(ground[5].getX() + separator_x / 12f, ground[5].getY());
+		ground[4].setPosition(ground[4].getX() + 15, ground[4].getY());
+		ground[2].setPosition(ground[2].getX(), ground[2].getY() + 1);
+		set_fonts(a_scene);
 		randomize_image();
 	}
 	
-	public ShootLogic(SimpleBaseGameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures, int width, int height) {
+	public ShootLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
-		set_ground_images(a_scene, width, height);
-		
-//		String asd = "asdasd";
-//		int bar = Integer.parseInt(asd);
-//		String asdd = Integer.toString(bar);
-
-	}
-	
-	public void render(Scene a_scene) {
-		for(int i = 0; i < IMAGES_COUNT; i++) {
-			a_scene.attachChild(ground[i]);
-		}
+		set_environment(a_scene);
 	}
 }
