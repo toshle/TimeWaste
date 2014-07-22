@@ -20,7 +20,9 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 
 import com.timewaste.timewaste.GameActivity;
@@ -69,17 +71,46 @@ public class Labyrinth extends GameActivity {
 					return context.getAssets().open("gfx/labyrinth/snake_tailpart.png");
 				}
 			});
+			ITexture grape = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/labyrinth/grape.png");
+				}
+			});
 		
 			face_box.load();
 			grass.load();
 			wall.load();
+			grape.load();
 			
 			textures.put("face_box", TextureRegionFactory.extractFromTexture(face_box));
 			textures.put("grass", TextureRegionFactory.extractFromTexture(grass));
 			textures.put("wall", TextureRegionFactory.extractFromTexture(wall));
+			textures.put("grape", TextureRegionFactory.extractFromTexture(grape));
+
 		} catch (IOException e) {
 			Debug.e(e);
 		}
+	}
+	
+	private void show_score() {
+		final Labyrinth context = this;
+		this.runOnUiThread(new Runnable() {
+		    @Override
+		    public void run() {
+		        //Toast.makeText(TickTackToe.this, message, Toast.LENGTH_SHORT).show();
+		    	AlertDialog.Builder alert = new AlertDialog.Builder(context).
+		        setTitle("Game Ended").
+		        setMessage("Your win!").
+		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int id) {
+			        	context.finalization();
+			        	context.loadNextGame();
+			        }
+		        });
+		    	alert.show();
+		    }
+		});
 	}
 	
 	@Override
@@ -90,7 +121,7 @@ public class Labyrinth extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.52f, 0.71f, 0.44f));
 		
-		Maze maze = new Maze(33, 23);
+		Maze maze = new Maze(22, 15);
 		maze.recursive_division_maze_generation(1, maze.get_width(), 1, maze.get_length());
 		final MovingObject moving_object = new MovingObject(maze);
 		final Sprite[][] matrix = new Sprite[maze.get_width() + 1][maze.get_length() + 1];
@@ -147,6 +178,9 @@ public class Labyrinth extends GameActivity {
 			matrix[new_x][new_y].setSize(width, length);
 		}
 		scene.sortChildren();
+		
+		if (moving_object.get_maze().game_maze.get(new Point(new_x, new_y)) == 3)
+			show_score();
 	}
 	
 	private void visualize_labyrinth(Scene scene, Sprite[][] matrix, MovingObject moving_object) {
@@ -164,7 +198,7 @@ public class Labyrinth extends GameActivity {
 				else if (status == 2)
 					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("face_box"), this.getVertexBufferObjectManager());
 				else if (status == 3)
-					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("face_box"), this.getVertexBufferObjectManager());
+					matrix[i][j] = new Sprite((i - 1)*width, (j - 1)*length, this.textures.get("grape"), this.getVertexBufferObjectManager());
 				
 				matrix[i][j].setSize(width, length);
 				scene.attachChild(matrix[i][j]);
