@@ -1,5 +1,11 @@
 package com.timewaste.timewaste;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.timewaste.games.shoot.Shoot;
+import com.timewaste.games.tictactoe.*;
 
 import android.app.Service;
 import android.content.Context;
@@ -18,7 +24,13 @@ public class GameController extends Service {
 	/** indicates whether onRebind should be used */
 	boolean mAllowRebind;
 	
-	private int mInterval = 5000; // 5 seconds by default, can be changed later
+	private int category;
+	
+	private Random randomizer;
+	
+	private List<Class<?>>[] categories;
+	
+	private int mInterval = 30000; // 30 seconds by default, can be changed later
 	private Handler mHandler;
 	
 	Context context;
@@ -26,8 +38,17 @@ public class GameController extends Service {
 	/** Called when the service is being created. */
 	@Override
 	public void onCreate() {
+		randomizer = new Random();
 		mHandler = new Handler();
-
+		categories = new List[4];
+		categories[0] = new ArrayList<Class<?>>();
+		categories[1] = new ArrayList<Class<?>>();
+		categories[2] = new ArrayList<Class<?>>();
+		categories[3] = new ArrayList<Class<?>>();
+		
+		categories[0].add(TicTacToe.class);
+		categories[0].add(Shoot.class);
+		
 		context = this;
 		startRepeatingTask();
 		
@@ -36,7 +57,7 @@ public class GameController extends Service {
 	/** The service is starting, due to a call to startService() */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		category = intent.getIntExtra("category", 1) - 1;
 		return mStartMode;
 	}
 	
@@ -55,7 +76,7 @@ public class GameController extends Service {
 	void stopRepeatingTask() {
 	    mHandler.removeCallbacks(mGameLoader);
 	}
-	
+
 	private void loadNextGame() {
         Intent dialogIntent = new Intent(context, Labyrinth.class);
 		dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

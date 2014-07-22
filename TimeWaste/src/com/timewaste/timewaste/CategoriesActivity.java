@@ -1,5 +1,6 @@
 package com.timewaste.timewaste;
 
+import com.timewaste.games.tictactoe.TicTacToe;
 import com.timewaste.timewaste.R;
 
 import android.app.Activity;
@@ -32,14 +33,13 @@ public class CategoriesActivity extends Activity {
     }
 	
 	public void playGame(View view) {
-		startService(new Intent(getBaseContext(), GameController.class));
-//    	Intent my_intent = new Intent(CategoriesActivity.this, TicTacToe.class);
-//    	startActivity(my_intent);
+		//startService(new Intent(getBaseContext(), GameController.class).putExtra("category", 1));
+    	Intent my_intent = new Intent(CategoriesActivity.this, TicTacToe.class);
+    	startActivity(my_intent);
     }
 	
 	public void onStop() {
 		super.onStop();
-
 		//stopService(new Intent(getBaseContext(), GameController.class));
 	}
 }

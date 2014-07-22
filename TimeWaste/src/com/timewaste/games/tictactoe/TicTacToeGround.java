@@ -3,17 +3,21 @@ package com.timewaste.games.tictactoe;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.input.touch.TouchEvent;
+
+import com.timewaste.timewaste.GameActivity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 public class TicTacToeGround {
 	private Sprite ground[] = new Sprite[9];
-	private SimpleBaseGameActivity game_instance;
+	private GameActivity game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	
 	//Constants
@@ -107,7 +111,8 @@ public class TicTacToeGround {
 				}
 		        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int id) {
-			        	game_instance.finish();
+			        	game_instance.finalization();
+			        	game_instance.loadNextGame();
 			        }
 		        });
 		    	alert.show();
@@ -151,7 +156,7 @@ public class TicTacToeGround {
 		}
 	}
 	
-	public TicTacToeGround(SimpleBaseGameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures)
+	public TicTacToeGround(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures)
 	{
 		this.game_instance = game_instance;
 		this.textures = textures;

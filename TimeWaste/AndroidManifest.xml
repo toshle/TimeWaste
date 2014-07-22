@@ -46,6 +46,11 @@
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
 
+		<activity
+            android:name="com.timewaste.games.drinkfarm.DrinkFarm"
+            android:label="@string/title_activity_drink_farm" >
+        </activity>
+
         <service
             android:name="com.timewaste.timewaste.GameController"
             android:enabled="true"

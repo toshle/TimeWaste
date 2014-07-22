@@ -33,6 +33,7 @@ public class TicTacToe extends GameActivity {
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
+		super.onCreateEngineOptions();
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -40,6 +41,7 @@ public class TicTacToe extends GameActivity {
 	
 	@Override
 	public void onCreateResources() {
+		super.onCreateResources();
 		final Context context = this;
 		try {
 			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
@@ -85,6 +87,7 @@ public class TicTacToe extends GameActivity {
 	
 	@Override
 	public Scene onCreateScene() {
+		super.onCreateScene();
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 
 		final Scene scene = new Scene();
