@@ -37,6 +37,14 @@
             android:label="Shoot"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
+        
+        <activity
+            android:launchMode="singleTop"
+            android:name="com.timewaste.games.arcadeshooter.ArcadeShooter"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Arcade Shooter"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
+        </activity>
 
  		<activity
             android:launchMode="singleTop"
