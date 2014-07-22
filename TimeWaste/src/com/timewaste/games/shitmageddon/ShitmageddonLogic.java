@@ -156,7 +156,7 @@ public class ShitmageddonLogic {
 	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {       
 		this.toilet = set_image_logic();
-		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, screen_height() - this.toilet.getHeight() + 10);
+		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, 390);//screen_height() - this.toilet.getHeight() + 10);
 		a_scene.registerTouchArea(this.toilet);
 		a_scene.attachChild(this.toilet);
 		

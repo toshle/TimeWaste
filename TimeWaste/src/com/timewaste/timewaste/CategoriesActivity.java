@@ -59,7 +59,7 @@ public class CategoriesActivity extends Activity {
 		return category;
 	}
 	
-	
+	/*
 	public void playGame(View view) {
 		int gameCategory = categoryIdToInt(view.getId());
 		Intent gameIntent = new Intent(this, categories.selectGame(gameCategory, null));
@@ -69,7 +69,8 @@ public class CategoriesActivity extends Activity {
         
     	startActivity(gameIntent);
     }
-	/*
+	
+	*/
 	public void playGame(View view) {
 		  
 		  Intent gameIntent = new Intent(this, Shitmageddon.class);
@@ -79,7 +80,7 @@ public class CategoriesActivity extends Activity {
 		        
 		        startActivity(gameIntent);
 		    }
-	*/
+	
 	
 	public void onStop() {
 		super.onStop();
