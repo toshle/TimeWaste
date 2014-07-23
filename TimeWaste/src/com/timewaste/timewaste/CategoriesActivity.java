@@ -23,7 +23,6 @@ public class CategoriesActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		stopService(new Intent(getBaseContext(), GameController.class));
 	}
 	
 	@Override

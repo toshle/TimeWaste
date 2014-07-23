@@ -58,7 +58,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 
 	@Override
 	public void onAccelerationChanged(AccelerationData pAccelerationData) {
-		float newX = ship.getX() + pAccelerationData.getX();
+		float newX = ship.getX() + pAccelerationData.getX()*2;
 		if(newX >= 0 && newX <= screen_width() - ship.getWidth()) {
 			ship.setPosition(newX, ship.getY());
 		}
@@ -68,7 +68,6 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		game_instance.runOnUiThread(new Runnable() {
 		    @Override
 		    public void run() {
-		        //Toast.makeText(TickTackToe.this, message, Toast.LENGTH_SHORT).show();
 		    	AlertDialog.Builder alert = new AlertDialog.Builder(game_instance).
 		        setTitle("Game Ended").
 		        setMessage("Your score is: " + score.getText()).
@@ -91,7 +90,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	
 	private void randomize_enemy_location() {
 		Random random_number = new Random(System.currentTimeMillis());
-		enemy.setPosition(random_number.nextInt(screen_width()), -enemy.getHeight());
+		enemy.setPosition(random_number.nextInt((int) (screen_width() - enemy.getWidth())), -enemy.getHeight());
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -131,13 +130,14 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		            	bullet.setPosition(bullet.getX(), bullet.getY() - 3);
 		            	if(enemy.getY() > bullet.getY() && (enemy.getX() >= (bullet.getX() - bullet.getWidth()/2) && enemy.getX() <= bullet.getX() + bullet.getWidth())) {
 		            		change_score(100);
+		            		iter.remove();
 			            	explosion.setPosition(enemy.getX(), enemy.getY());
 			            	explosion.setVisible(true);
 			            	randomize_enemy_location();
 			            	bullet.setVisible(false);
 		            	}
 		            }
-		            //If you miss the enemy
+
 		            if(enemy.getY() > screen_height() + enemy.getHeight()) {
 		            	randomize_enemy_location();
 		            }
@@ -148,7 +148,6 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		a_scene.registerUpdateHandler(mTimerHandler);
 	}
 	
-	//Formula to set the ground images. Also registering touch events for every image.
 	private void set_environment(Scene a_scene) {   
 		this.explosion = new Sprite(0, 0, textures.get("explosion"), game_instance.getVertexBufferObjectManager());
 		this.explosion.setVisible(false);

@@ -23,6 +23,7 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.timewaste.timewaste.GameActivity;
 
@@ -34,6 +35,7 @@ public class ArcadeShooter extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		Toast.makeText(this, "Tilt to move. Tap to shoot.", Toast.LENGTH_LONG).show();
 		if(screen_height() < screen_width()) {
 			CAMERA_WIDTH = screen_width();
 			CAMERA_HEIGHT = screen_height();
@@ -116,7 +118,7 @@ public class ArcadeShooter extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
 
-		/* Create the background and add it to the scene. */
+
 		final Sprite ground_image = new Sprite(0, 0, this.textures.get("background"), this.getVertexBufferObjectManager()); 
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
@@ -125,7 +127,7 @@ public class ArcadeShooter extends GameActivity {
 		ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
 		this.enableAccelerationSensor(logic);
 		ArcadeShooter.this.gameMusic.play();
-		//this.runCycle(scene);
+		this.runCycle(scene);
 		return scene;
 	}
 }
