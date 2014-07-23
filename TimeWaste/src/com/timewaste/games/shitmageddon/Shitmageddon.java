@@ -25,6 +25,7 @@ import org.andengine.util.debug.Debug;
 import android.content.Context;
 import android.view.Display;
 import android.view.Surface;
+import android.widget.Toast;
 
 import com.timewaste.timewaste.GameActivity;
 
@@ -36,6 +37,7 @@ public class Shitmageddon extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		Toast.makeText(this, "Tilt to move.", Toast.LENGTH_LONG).show();
 		if(screen_height() < screen_width()) {
 			CAMERA_WIDTH = screen_width();
 			CAMERA_HEIGHT = screen_height();
@@ -106,8 +108,9 @@ public class Shitmageddon extends GameActivity {
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		@SuppressWarnings("unused")
+		
 		ShitmageddonLogic logic = new ShitmageddonLogic(this, scene, this.textures);
+		this.enableAccelerationSensor(logic);
 		
 		Shitmageddon.this.gameMusic.play();
 		this.runCycle(scene);

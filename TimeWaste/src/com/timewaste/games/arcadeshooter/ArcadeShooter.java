@@ -59,6 +59,7 @@ public class ArcadeShooter extends GameActivity {
 	
 	@Override
 	public void onCreateResources() {
+		super.onCreateResources();
 		MusicFactory.setAssetBasePath("mfx/");
 		SoundFactory.setAssetBasePath("mfx/");
 		final Context context = this;
@@ -131,13 +132,10 @@ public class ArcadeShooter extends GameActivity {
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-
-		try {
-			ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
-			this.enableAccelerationSensor(logic);
-		} catch (IOException e) {
-			Debug.e(e);
-		}
+		
+		ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
+		this.enableAccelerationSensor(logic);
+		
 		ArcadeShooter.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;

@@ -31,8 +31,8 @@ public class Categories {
 		categories[2].add(Shoot.class);
 		categories[1].add(DrinkFarm.class);
 		//categories[3].add(Evade.class);
-		//categories[3].add(Shitmageddon.class);
-		categories[3].add(ArcadeShooter.class);
+		categories[0].add(Shitmageddon.class);
+		categories[0].add(ArcadeShooter.class);
 	}
 	
 	public Class<?> selectGame(int category, Class<?> current) {

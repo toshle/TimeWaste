@@ -28,6 +28,9 @@ import org.andengine.input.sensor.acceleration.AccelerationData;
 import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.input.touch.TouchEvent;
 
+import com.timewaste.games.labyrinth.Labyrinth;
+import com.timewaste.timewaste.GameActivity;
+
 import android.graphics.Color;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -48,7 +51,11 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	private Text score;
 	private int speed, current_speed;
 	
+	private Scene mScene;
+	
 	private Sound cannonSound, explosionSound;
+	
+	private TimerHandler mTimerHandler;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -73,21 +80,9 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	}
 	
 	private void show_score() {
-		game_instance.runOnUiThread(new Runnable() {
-		    @Override
-		    public void run() {
-		    	AlertDialog.Builder alert = new AlertDialog.Builder(game_instance).
-		        setTitle("Game Ended").
-		        setMessage("Your score is: " + score.getText()).
-		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int id) {
-			        	game_instance.finalization();
-			        	game_instance.loadNextGame();
-			        }
-		        });
-		    	alert.show();
-		    }
-		});
+		mScene.unregisterUpdateHandler(mTimerHandler);
+    	game_instance.finalization();
+    	game_instance.loadNextGame();
 	}
 	
 	private void change_score(int value) {
@@ -97,6 +92,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	}
 	
 	private void randomize_enemy_location() {
+		enemy.setVisible(true);
 		Random random_number = new Random(System.currentTimeMillis());
 		enemy.setPosition(random_number.nextInt((int) (screen_width() - enemy.getWidth())), -enemy.getHeight());
 	}
@@ -123,10 +119,11 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		explosionSound.play();
     	explosion.setPosition(enemy.getX(), enemy.getY());
     	explosion.setVisible(true);
+    	enemy.setVisible(false);
 	}
 	
 	private void catching_enemy_logic(Scene a_scene) {
-		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
+		mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
 		    public void onTimePassed(TimerHandler pTimerHandler) {
 		    	speed--;
@@ -184,12 +181,13 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		catching_enemy_logic(a_scene);
 	}
 	
-	public ArcadeShooterLogic(ArcadeShooter game_instance, Scene a_scene, Map<String, ITextureRegion> textures) throws IOException {
+	public ArcadeShooterLogic(ArcadeShooter game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		this.speed = 10;
 		this.current_speed = 10;
-
+		mScene = a_scene;
+		
 		try {
 			cannonSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/cannon.wav");
 			explosionSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/explosion.wav");
