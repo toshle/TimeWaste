@@ -1,10 +1,15 @@
 package com.timewaste.games.shoot;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
 import org.andengine.AndEngine;
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -18,6 +23,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.TextUtils;
+import org.andengine.util.debug.Debug;
 
 import com.timewaste.timewaste.GameActivity;
 
@@ -37,6 +43,7 @@ public class ShootLogic {
 	private Shoot game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
+	private Sound shotSound;
 	
 	private float screen_width() {
 		return game_instance.getResources().getDisplayMetrics().widthPixels;
@@ -72,9 +79,9 @@ public class ShootLogic {
 		setTextureRegion(textures.get(images[random_number.nextInt(IMAGES_COUNT)]));
 	}
 	
-	private void increase_score() {
+	private void increase_score(int score) {
 		int current_score = Integer.parseInt(this.score.getText().toString());
-		this.score.setText(Integer.toString(current_score + 100));
+		this.score.setText(Integer.toString(current_score + score));
 		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
 	}
 	
@@ -82,13 +89,21 @@ public class ShootLogic {
 	private Sprite set_image_logic(){
 		return new Sprite(0, 0, textures.get("empty"), game_instance.getVertexBufferObjectManager()) {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				if(this.getTextureRegion() != textures.get("empty")) {
-					this.setTextureRegion(textures.get("empty"));
-					randomize_image();
-					increase_score();
-					//If timer runs out -> show_score();
-				}	
-				return true;
+				if(pSceneTouchEvent.isActionDown()) {
+					shotSound.play();
+					if(this.getTextureRegion() != textures.get("empty")) {
+						this.setTextureRegion(textures.get("empty"));
+						randomize_image();
+						increase_score(100);
+	            		game_instance.addPoints(100);
+					} else {
+						randomize_image();
+						increase_score(-100);
+	            		game_instance.addPoints(-100);
+					}
+					return true;
+				}
+				return false;
 			}
 		};
 	}
@@ -137,6 +152,11 @@ public class ShootLogic {
 	public ShootLogic(Shoot game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
+		try {
+			shotSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "shoot/shot.ogg");
+		} catch (IOException e) {
+			Debug.e(e);
+		}
 		set_environment(a_scene);
 	}
 }

@@ -1,5 +1,6 @@
 package com.timewaste.games.arcadeshooter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.sprite.Sprite;
@@ -14,6 +19,7 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.util.debug.Debug;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
@@ -41,6 +47,8 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	private int speed, current_speed;
+	
+	private Sound cannonSound, explosionSound;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -111,6 +119,12 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		return new Sprite(0, 0, textures.get("ship"), game_instance.getVertexBufferObjectManager());
 	}
 	
+	private void explode() {
+		explosionSound.play();
+    	explosion.setPosition(enemy.getX(), enemy.getY());
+    	explosion.setVisible(true);
+	}
+	
 	private void catching_enemy_logic(Scene a_scene) {
 		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
@@ -126,17 +140,21 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		                Sprite bullet = iter.next();
 		            	bullet.setPosition(bullet.getX(), bullet.getY() - 3);
 		            	if(enemy.getY() > bullet.getY() && (enemy.getX() >= (bullet.getX() - bullet.getWidth()/2) && enemy.getX() <= bullet.getX() + bullet.getWidth())) {
+		            		explode();
 		            		change_score(100);
 		            		game_instance.addPoints(100);
 		            		iter.remove();
-			            	explosion.setPosition(enemy.getX(), enemy.getY());
-			            	explosion.setVisible(true);
 			            	randomize_enemy_location();
 			            	bullet.setVisible(false);
 		            	}
 		                if(bullet.getY() < -bullet.getHeight() && bullet.isVisible()) {
 		            		iter.remove();
 		            	}
+		            }
+		            
+		            if(enemy.getY() > ship.getY() && (enemy.getX() >= ship.getX() && enemy.getX() <= ship.getX() + ship.getWidth())) {
+		            	explode();
+		            	show_score();
 		            }
 
 		            if(enemy.getY() > screen_height() + enemy.getHeight()) {
@@ -166,11 +184,18 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		catching_enemy_logic(a_scene);
 	}
 	
-	public ArcadeShooterLogic(ArcadeShooter game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	public ArcadeShooterLogic(ArcadeShooter game_instance, Scene a_scene, Map<String, ITextureRegion> textures) throws IOException {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		this.speed = 10;
 		this.current_speed = 10;
+
+		try {
+			cannonSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/cannon.wav");
+			explosionSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/explosion.wav");
+		} catch (IOException e) {
+			Debug.e(e);
+		}
 		bullets = new ArrayList<Sprite>();
 		a_scene.setOnSceneTouchListener(this);
 		set_environment(a_scene);
@@ -179,6 +204,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		if (pSceneTouchEvent.isActionDown()) {
+			cannonSound.play();
 	        float bulletX = ship.getX(),
 	        	  bulletY = screen_height() - ship.getHeight() + 10;
 	        Sprite bullet = new Sprite(bulletX, bulletY, textures.get("bullet"), game_instance.getVertexBufferObjectManager());

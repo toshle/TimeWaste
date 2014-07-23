@@ -7,6 +7,8 @@ import java.util.TreeMap;
 
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.music.MusicManager;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -47,12 +49,18 @@ public class ArcadeShooter extends GameActivity {
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
 		engineOptions.getAudioOptions().setNeedsMusic(true);
+		engineOptions.getAudioOptions().setNeedsSound(true);
 		return engineOptions;
+	}
+	
+	public MusicManager getMusicManager() {
+		return this.mEngine.getMusicManager();
 	}
 	
 	@Override
 	public void onCreateResources() {
 		MusicFactory.setAssetBasePath("mfx/");
+		SoundFactory.setAssetBasePath("mfx/");
 		final Context context = this;
 		try {
 			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
@@ -102,7 +110,7 @@ public class ArcadeShooter extends GameActivity {
 		    textures.put("bullet", TextureRegionFactory.extractFromTexture(bullet));
 		    textures.put("explosion", TextureRegionFactory.extractFromTexture(explosion));
 		    
-		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shitmageddon/Heroes_of_Might_and_Magic_3_Music-_Combat_2.ogg");
+		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "arcadeshooter/background.ogg");
 			this.gameMusic.setLooping(true);
 			
 		} catch (IOException e) {
@@ -123,9 +131,13 @@ public class ArcadeShooter extends GameActivity {
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		
-		ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
-		this.enableAccelerationSensor(logic);
+
+		try {
+			ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
+			this.enableAccelerationSensor(logic);
+		} catch (IOException e) {
+			Debug.e(e);
+		}
 		ArcadeShooter.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;

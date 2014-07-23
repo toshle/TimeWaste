@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -22,12 +25,14 @@ import org.andengine.util.debug.Debug;
 
 import android.content.Context;
 
+import com.timewaste.games.arcadeshooter.ArcadeShooter;
 import com.timewaste.timewaste.GameActivity;
 
 public class Shoot extends GameActivity {
 
 	
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
+	private Music gameMusic;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -35,12 +40,16 @@ public class Shoot extends GameActivity {
 		CAMERA_WIDTH = 720;
 		CAMERA_HEIGHT = 480;
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+		engineOptions.getAudioOptions().setNeedsMusic(true);
+		engineOptions.getAudioOptions().setNeedsSound(true);
+		return engineOptions;
 	}
 	
 	@Override
 	public void onCreateResources() {
+		MusicFactory.setAssetBasePath("mfx/");
+		SoundFactory.setAssetBasePath("mfx/");
 		final Context context = this;
 		try {
 			ITexture building = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
@@ -115,6 +124,9 @@ public class Shoot extends GameActivity {
 		    textures.put("skunks", TextureRegionFactory.extractFromTexture(skunks));
 		    textures.put("tweety", TextureRegionFactory.extractFromTexture(tweety));
 		    
+		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shoot/background.ogg");
+			this.gameMusic.setLooping(true);
+		    
 		} catch (IOException e) {
 			Debug.e(e);
 		}
@@ -134,6 +146,7 @@ public class Shoot extends GameActivity {
 		scene.attachChild(ground_image);
 		@SuppressWarnings("unused")
 		ShootLogic logic = new ShootLogic(this, scene, this.textures);
+		Shoot.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;
 	}
