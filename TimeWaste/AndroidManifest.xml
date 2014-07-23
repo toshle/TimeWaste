@@ -67,6 +67,14 @@
             android:label="@string/title_activity_drink_farm" >
         </activity>
 
+		<activity
+            android:launchMode="singleTop"
+            android:name="com.timewaste.games.evade.Evade"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Evade"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
+        </activity>
+
         <service
             android:name="com.timewaste.timewaste.GameController"
             android:enabled="true"
