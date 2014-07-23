@@ -74,22 +74,31 @@ public class ArcadeShooter extends GameActivity {
 				}
 			});
 			
-			ITexture bullets = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+			ITexture bullet = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
 					return context.getAssets().open("gfx/arcadeshooter/png/bullets.png");
 				}
 			});
 			
+			ITexture explosion = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/arcadeshooter/png/explosion.png");
+				}
+			});
+			
 			background.load();
 			ship.load();
 			enemy.load();
-			bullets.load();
+			bullet.load();
+			explosion.load();
 
 		    textures.put("background", TextureRegionFactory.extractFromTexture(background));
 		    textures.put("ship", TextureRegionFactory.extractFromTexture(ship));
 		    textures.put("enemy", TextureRegionFactory.extractFromTexture(enemy));
-		    textures.put("bullets", TextureRegionFactory.extractFromTexture(bullets));
+		    textures.put("bullet", TextureRegionFactory.extractFromTexture(bullet));
+		    textures.put("explosion", TextureRegionFactory.extractFromTexture(explosion));
 		    
 		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shitmageddon/Heroes_of_Might_and_Magic_3_Music-_Combat_2.ogg");
 			this.gameMusic.setLooping(true);

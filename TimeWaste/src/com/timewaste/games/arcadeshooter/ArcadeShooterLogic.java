@@ -1,5 +1,8 @@
 package com.timewaste.games.arcadeshooter;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -11,6 +14,7 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -25,19 +29,18 @@ import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.os.Handler;
 import android.view.Gravity;
 import android.widget.Toast;
 
-public class ArcadeShooterLogic implements IAccelerationListener {
+public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchListener {
 	//Fields
-	private Sprite ship, enemy;
+	private Sprite ship, enemy, explosion;
+	private List<Sprite> bullets;
 	private ArcadeShooter game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	private int speed, current_speed;
-	 
-    private int accellerometerSpeedX;
-    private int accellerometerSpeedY;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -59,18 +62,6 @@ public class ArcadeShooterLogic implements IAccelerationListener {
 		if(newX >= 0 && newX <= screen_width() - ship.getWidth()) {
 			ship.setPosition(newX, ship.getY());
 		}
-	}
-
-	
-	private void speed_toast (final String message) {
-		game_instance.runOnUiThread(new Runnable() {
-		    @Override
-		    public void run() {
-		        Toast toast = Toast.makeText(game_instance, message, Toast.LENGTH_SHORT);
-		        toast.setGravity(Gravity.TOP|Gravity.LEFT, screen_width() / 2 - 80, 0);
-		        toast.show();
-		    }
-		});
 	}
 	
 	private void show_score() {
@@ -100,7 +91,7 @@ public class ArcadeShooterLogic implements IAccelerationListener {
 	
 	private void randomize_enemy_location() {
 		Random random_number = new Random(System.currentTimeMillis());
-		enemy.setPosition(random_number.nextInt(screen_width()), 0);
+		enemy.setPosition(random_number.nextInt(screen_width()), -enemy.getHeight());
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -129,26 +120,40 @@ public class ArcadeShooterLogic implements IAccelerationListener {
 		        if(speed == 0) {
 		        	speed = current_speed;
 		            enemy.setPosition(enemy.getX(), enemy.getY() + 1);
-		            //If you catch the enemy
-		            if(enemy.getY() > ship.getY() && (enemy.getX() >= ship.getX() && enemy.getX() <= ship.getX() + ship.getWidth())) {
-		            	change_score(100);
-		            	randomize_enemy_location();
+	            	explosion.setPosition(explosion.getX(), explosion.getY() + 1);
+		            
+		            Iterator<Sprite> iter = bullets.iterator();
+		            while(iter.hasNext()){
+		                Sprite bullet = iter.next();
+		                if(bullet.getY() < -bullet.getHeight()) {
+		            		iter.remove();
+		            	}
+		            	bullet.setPosition(bullet.getX(), bullet.getY() - 3);
+		            	if(enemy.getY() > bullet.getY() && (enemy.getX() >= (bullet.getX() - bullet.getWidth()/2) && enemy.getX() <= bullet.getX() + bullet.getWidth())) {
+		            		change_score(100);
+			            	explosion.setPosition(enemy.getX(), enemy.getY());
+			            	explosion.setVisible(true);
+			            	randomize_enemy_location();
+			            	bullet.setVisible(false);
+		            	}
 		            }
 		            //If you miss the enemy
-		            if(enemy.getY() > screen_height() - enemy.getHeight()) {
-		            	change_score(-200);
+		            if(enemy.getY() > screen_height() + enemy.getHeight()) {
 		            	randomize_enemy_location();
 		            }
 		        }
 		        //set_fall_speed();
-		        //show_score when 30 seconds pass Roska?
 		    }
 		});
 		a_scene.registerUpdateHandler(mTimerHandler);
 	}
 	
 	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_environment(Scene a_scene) {       
+	private void set_environment(Scene a_scene) {   
+		this.explosion = new Sprite(0, 0, textures.get("explosion"), game_instance.getVertexBufferObjectManager());
+		this.explosion.setVisible(false);
+		a_scene.attachChild(this.explosion);
+		
 		this.ship = set_image_logic();
 		this.ship.setPosition(screen_width() / 2 - this.ship.getWidth() / 2, screen_height() - this.ship.getHeight() + 10);
 		a_scene.registerTouchArea(this.ship);
@@ -166,8 +171,22 @@ public class ArcadeShooterLogic implements IAccelerationListener {
 		this.textures = textures;
 		this.speed = 10;
 		this.current_speed = 10;
-		
+		bullets = new ArrayList<Sprite>();
+		a_scene.setOnSceneTouchListener(this);
 		set_environment(a_scene);
+	}
+
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		if (pSceneTouchEvent.isActionDown()) {
+	        float bulletX = ship.getX(),
+	        	  bulletY = screen_height() - ship.getHeight() + 10;
+	        Sprite bullet = new Sprite(bulletX, bulletY, textures.get("bullet"), game_instance.getVertexBufferObjectManager());
+			pScene.attachChild(bullet);
+	        bullets.add(bullet);
+	        bullet = null;
+	    }
+		return false;
 	}
 
 	
