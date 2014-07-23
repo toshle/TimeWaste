@@ -106,6 +106,11 @@ public abstract class GamePad {
 			}
 		};
 		
+		left_arrow.setZIndex(2);
+		right_arrow.setZIndex(2);
+		up_arrow.setZIndex(2);
+		down_arrow.setZIndex(2); // set index 1 to all of the bottom sprites
+
 		scene.attachChild(left_arrow);
 		scene.attachChild(right_arrow);
 		scene.attachChild(up_arrow);

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.timewaste.games.arcadeshooter.ArcadeShooter;
 import com.timewaste.games.drinkfarm.DrinkFarm;
+import com.timewaste.games.evade.Evade;
 import com.timewaste.games.labyrinth.Labyrinth;
 import com.timewaste.games.runner.Runner;
 import com.timewaste.games.shitmageddon.Shitmageddon;
@@ -15,6 +17,7 @@ public class Categories {
 
 	private Random randomizer = new Random();
 	
+	@SuppressWarnings("unchecked")
 	private List<Class<?>>[] categories = new List[4];
 	
 	public Categories() {
@@ -22,12 +25,14 @@ public class Categories {
 		categories[1] = new ArrayList<Class<?>>();
 		categories[2] = new ArrayList<Class<?>>();
 		categories[3] = new ArrayList<Class<?>>();
-		
+
 		//categories[0].add(TicTacToe.class);
 		categories[0].add(Labyrinth.class);
 		categories[2].add(Shoot.class);
 		categories[1].add(DrinkFarm.class);
-		categories[3].add(Runner.class);
+		//categories[3].add(Evade.class);
+		//categories[3].add(Shitmageddon.class);
+		categories[3].add(ArcadeShooter.class);
 	}
 	
 	public Class<?> selectGame(int category, Class<?> current) {

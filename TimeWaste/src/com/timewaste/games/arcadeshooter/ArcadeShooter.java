@@ -1,4 +1,4 @@
-package com.timewaste.games.shitmageddon;
+package com.timewaste.games.arcadeshooter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,12 +23,11 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import android.content.Context;
-import android.view.Display;
-import android.view.Surface;
+import android.widget.Toast;
 
 import com.timewaste.timewaste.GameActivity;
 
-public class Shitmageddon extends GameActivity {
+public class ArcadeShooter extends GameActivity {
 
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Music gameMusic;
@@ -36,6 +35,7 @@ public class Shitmageddon extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
+		Toast.makeText(this, "Tilt to move. Tap to shoot.", Toast.LENGTH_LONG).show();
 		if(screen_height() < screen_width()) {
 			CAMERA_WIDTH = screen_width();
 			CAMERA_HEIGHT = screen_height();
@@ -46,7 +46,6 @@ public class Shitmageddon extends GameActivity {
 		
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
-
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
 	}
@@ -59,31 +58,49 @@ public class Shitmageddon extends GameActivity {
 			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/shitmageddon/png/background.png");
+					return context.getAssets().open("gfx/arcadeshooter/png/background.png");
 				}
 			});
 			
-			ITexture toilet = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+			ITexture ship = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/shitmageddon/gif/toilet.gif");
+					return context.getAssets().open("gfx/arcadeshooter/png/ship.png");
 				}
 			});
 			
-			ITexture shit = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
-		        @Override
-		        public InputStream open() throws IOException {
-		            return context.getAssets().open("gfx/shitmageddon/gif/shit.gif");
-		        }
-		    });
+			ITexture enemy = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/arcadeshooter/png/enemy.png");
+				}
+			});
+			
+			ITexture bullet = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/arcadeshooter/png/bullets.png");
+				}
+			});
+			
+			ITexture explosion = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/arcadeshooter/png/explosion.png");
+				}
+			});
 			
 			background.load();
-			shit.load();
-		    toilet.load();
+			ship.load();
+			enemy.load();
+			bullet.load();
+			explosion.load();
 
 		    textures.put("background", TextureRegionFactory.extractFromTexture(background));
-		    textures.put("toilet", TextureRegionFactory.extractFromTexture(toilet));
-		    textures.put("shit", TextureRegionFactory.extractFromTexture(shit));
+		    textures.put("ship", TextureRegionFactory.extractFromTexture(ship));
+		    textures.put("enemy", TextureRegionFactory.extractFromTexture(enemy));
+		    textures.put("bullet", TextureRegionFactory.extractFromTexture(bullet));
+		    textures.put("explosion", TextureRegionFactory.extractFromTexture(explosion));
 		    
 		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shitmageddon/Heroes_of_Might_and_Magic_3_Music-_Combat_2.ogg");
 			this.gameMusic.setLooping(true);
@@ -101,15 +118,15 @@ public class Shitmageddon extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
 
-		/* Create the background and add it to the scene. */
+
 		final Sprite ground_image = new Sprite(0, 0, this.textures.get("background"), this.getVertexBufferObjectManager()); 
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		@SuppressWarnings("unused")
-		ShitmageddonLogic logic = new ShitmageddonLogic(this, scene, this.textures);
 		
-		Shitmageddon.this.gameMusic.play();
+		ArcadeShooterLogic logic = new ArcadeShooterLogic(this, scene, this.textures);
+		this.enableAccelerationSensor(logic);
+		ArcadeShooter.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;
 	}

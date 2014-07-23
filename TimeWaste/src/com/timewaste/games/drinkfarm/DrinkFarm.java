@@ -34,7 +34,6 @@ public class DrinkFarm extends GameActivity {
 	private int CAMERA_HEIGHT;
 	private static Camera camera;
 	private static Scene scene;
-	private LinkedList TargetsToBeAdded;
 	
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 
@@ -67,48 +66,23 @@ public class DrinkFarm extends GameActivity {
 				}
 			});
 			
-//			ITexture bubble = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
-//				@Override
-//				public InputStream open() throws IOException {
-//					return context.getAssets().open("gfx/drinkfarm/png/bubble.png");
-//				}
-//			});
+			ITexture bubble = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/drinkfarm/png/bubble.png");
+				}
+			});
 			
 			machine.load();
 			cup.load();
-			//bubble.load();
+			bubble.load();
 			
 		    textures.put("machine", TextureRegionFactory.extractFromTexture(machine));
 		    textures.put("cup", TextureRegionFactory.extractFromTexture(cup));
-		    //textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
+		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
 		} catch (IOException e) {
 			Debug.e(e);
 		}
-	}
-	
-	public void addTarget() {
-	    Random rand = new Random();
-	 
-	    int x = (int) camera.getWidth() + CAMERA_WIDTH;
-	    int minY = CAMERA_HEIGHT;
-	    int maxY = (int) (camera.getHeight() - CAMERA_HEIGHT);
-	    int rangeY = maxY - minY;
-	    int y = rand.nextInt(rangeY) + minY;
-	 
-	    Sprite target = new Sprite(x, y, textures.get("cup"), getVertexBufferObjectManager());
-	    scene.attachChild(target);
-	 
-	    int minDuration = 2;
-	    int maxDuration = 4;
-	    int rangeDuration = maxDuration - minDuration;
-	    int actualDuration = rand.nextInt(rangeDuration) + minDuration;
-	 
-	    //MoveXModifier mod = new MoveXModifier(actualDuration, target.getX(),
-	      //  -target.getWidth());
-	    //target.registerEntityModifier(mod.deepCopy());
-	 
-	    TargetsToBeAdded.add(target);
-	 
 	}
 	
 	@Override
@@ -125,8 +99,6 @@ public class DrinkFarm extends GameActivity {
 		background_image.setHeight(CAMERA_HEIGHT);
 		
 		scene.attachChild(background_image);
-		
-		TargetsToBeAdded = new LinkedList();
 		
 		DrinkFarmLogic logic = new DrinkFarmLogic(this, scene, this.textures);
 		logic.render(scene);

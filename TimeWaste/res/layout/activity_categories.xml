@@ -49,5 +49,20 @@
         android:scaleType="fitCenter"
         android:src="@drawable/somewhere"
         android:onClick="playGame" />
+    
+    <TextView
+        android:id="@+id/scoreHead"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:layout_row="0"
+        android:text="Total score"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <TextView
+        android:id="@+id/scorePoints"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:layout_row="0"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </GridLayout>

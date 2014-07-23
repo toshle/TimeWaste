@@ -1,4 +1,4 @@
-package com.timewaste.games.shitmageddon;
+package com.timewaste.games.evade;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +26,10 @@ import android.content.Context;
 import android.view.Display;
 import android.view.Surface;
 
+import com.timewaste.games.shitmageddon.ShitmageddonLogic;
 import com.timewaste.timewaste.GameActivity;
 
-public class Shitmageddon extends GameActivity {
+public class Evade extends GameActivity {
 
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Music gameMusic;
@@ -106,10 +107,10 @@ public class Shitmageddon extends GameActivity {
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		@SuppressWarnings("unused")
-		ShitmageddonLogic logic = new ShitmageddonLogic(this, scene, this.textures);
+		//@SuppressWarnings("unused")
+		//ShitmageddonLogic logic = new ShitmageddonLogic(this, scene, this.textures);
 		
-		Shitmageddon.this.gameMusic.play();
+		//Evade.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;
 	}

@@ -9,6 +9,7 @@ import com.timewaste.utils.Timer.ITimerCallback;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 public class GameActivity extends SimpleBaseGameActivity {
@@ -29,6 +30,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 
 	private int timeLeft;
 	
+	private SharedPreferences storage;
+	
 
 	protected int CAMERA_WIDTH;
 	protected int CAMERA_HEIGHT;
@@ -48,9 +51,18 @@ public class GameActivity extends SimpleBaseGameActivity {
 	protected int screen_height() {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-
+	
+	public void addPoints(int points) {
+		SharedPreferences.Editor editor = storage.edit();
+		long totalScore = storage.getLong("totalScore", 0) + points;
+		editor.putLong("totalScore", totalScore);
+		editor.commit();
+	}
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() {
+		
+		storage = this.getSharedPreferences(getString(R.string.localStorage), Context.MODE_PRIVATE);
 		categories = new Categories();
 		gameCategory = getIntent().getIntExtra("category", 0);
 		currentGame = getIntent().getClass();
@@ -116,9 +128,6 @@ public class GameActivity extends SimpleBaseGameActivity {
 	@Override
 	public void onBackPressed() {
 		finalization();
-		Intent dialogIntent = new Intent(context, CategoriesActivity.class);
-
-		context.startActivity(dialogIntent);
 	}
 
 	@Override
