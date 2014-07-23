@@ -3,26 +3,41 @@ package com.timewaste.timewaste;
 import com.timewaste.timewaste.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 
+import android.widget.TextView;
+
 public class CategoriesActivity extends Activity {
 	
 	private Categories categories;
+	
+	private SharedPreferences storage;
+	
+	private long totalScore;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		categories = new Categories();
+		storage = this.getSharedPreferences(getString(R.string.localStorage), Context.MODE_PRIVATE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_categories);
+	}
+	
+	private void refreshPoints() {
+		((TextView) findViewById(R.id.scorePoints)).setText("" + totalScore);
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
+		totalScore = storage.getLong("totalScore", 0);
+		refreshPoints();
 	}
 	
 	@Override

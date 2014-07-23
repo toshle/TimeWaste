@@ -16,6 +16,7 @@ public class Categories {
 
 	private Random randomizer = new Random();
 	
+	@SuppressWarnings("unchecked")
 	private List<Class<?>>[] categories = new List[4];
 	
 	public Categories() {

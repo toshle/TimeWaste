@@ -124,17 +124,18 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		            Iterator<Sprite> iter = bullets.iterator();
 		            while(iter.hasNext()){
 		                Sprite bullet = iter.next();
-		                if(bullet.getY() < -bullet.getHeight()) {
-		            		iter.remove();
-		            	}
 		            	bullet.setPosition(bullet.getX(), bullet.getY() - 3);
 		            	if(enemy.getY() > bullet.getY() && (enemy.getX() >= (bullet.getX() - bullet.getWidth()/2) && enemy.getX() <= bullet.getX() + bullet.getWidth())) {
 		            		change_score(100);
+		            		game_instance.addPoints(100);
 		            		iter.remove();
 			            	explosion.setPosition(enemy.getX(), enemy.getY());
 			            	explosion.setVisible(true);
 			            	randomize_enemy_location();
 			            	bullet.setVisible(false);
+		            	}
+		                if(bullet.getY() < -bullet.getHeight() && bullet.isVisible()) {
+		            		iter.remove();
 		            	}
 		            }
 
