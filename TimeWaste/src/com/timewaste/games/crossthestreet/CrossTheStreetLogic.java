@@ -132,7 +132,7 @@ public class CrossTheStreetLogic implements IAccelerationListener {
 		if (random_car.nextInt(2) == 1) 
 			y = screen_height() / 4 * 3;
 		else
-			y = 0;
+			y = screen_height() / 4;
 		Random random_number = new Random(System.currentTimeMillis());
 
         Sprite new_car = new Sprite(-car.getWidth(), y, textures.get(images[random_number.nextInt(IMAGES_COUNT)]), game_instance.getVertexBufferObjectManager());
@@ -147,7 +147,7 @@ public class CrossTheStreetLogic implements IAccelerationListener {
 		if (random_car.nextInt(2) == 1) 
 			y = screen_height() / 2;
 		else
-			y = screen_height() / 4;
+			y = 0;
 		Random random_number = new Random(System.currentTimeMillis());
 
         Sprite new_car = new Sprite(screen_width() + car.getWidth(), y, textures.get(images[random_number.nextInt(IMAGES_COUNT)]), game_instance.getVertexBufferObjectManager());
