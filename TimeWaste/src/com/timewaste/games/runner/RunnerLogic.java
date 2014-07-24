@@ -265,8 +265,8 @@ public class RunnerLogic {
 		this.iteration_speed = SPEED_VALUE;
 		this.isRolling = false;
 		this.isJumping = false;
-		this.generate_speed = 1000;
-		this.current_generate_speed = 1000;
+		this.generate_speed = 1200;
+		this.current_generate_speed = 1200;
 		this.roll_time = 500;
 		this.jump_time = 700;
 		this.current_speed = 1.5f;

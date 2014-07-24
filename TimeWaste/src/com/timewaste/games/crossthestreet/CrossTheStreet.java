@@ -46,7 +46,7 @@ public class CrossTheStreet extends GameActivity {
 		}
 		
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new FillResolutionPolicy(), camera);
 
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;

@@ -93,12 +93,6 @@
             android:label="CrossTheStreet"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
-
-        <service
-            android:name="com.timewaste.timewaste.GameController"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>
