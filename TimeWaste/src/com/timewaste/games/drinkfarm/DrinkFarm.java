@@ -40,8 +40,13 @@ public class DrinkFarm extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		CAMERA_WIDTH = screen_width();
-		CAMERA_HEIGHT = screen_height();
+		if(screen_height() < screen_width()) {
+			CAMERA_WIDTH = screen_width();
+			CAMERA_HEIGHT = screen_height();
+		} else {
+			CAMERA_WIDTH = screen_height();
+			CAMERA_HEIGHT = screen_width();
+		}
 		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);

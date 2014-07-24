@@ -1,5 +1,6 @@
 package com.timewaste.games.arcadeshooter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.sprite.Sprite;
@@ -14,6 +19,7 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.util.debug.Debug;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
@@ -21,6 +27,9 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.input.sensor.acceleration.AccelerationData;
 import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.input.touch.TouchEvent;
+
+import com.timewaste.games.labyrinth.Labyrinth;
+import com.timewaste.timewaste.GameActivity;
 
 import android.graphics.Color;
 import android.app.AlertDialog;
@@ -41,6 +50,12 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	private int speed, current_speed;
+	
+	private Scene mScene;
+	
+	private Sound cannonSound, explosionSound;
+	
+	private TimerHandler mTimerHandler;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -65,21 +80,9 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	}
 	
 	private void show_score() {
-		game_instance.runOnUiThread(new Runnable() {
-		    @Override
-		    public void run() {
-		    	AlertDialog.Builder alert = new AlertDialog.Builder(game_instance).
-		        setTitle("Game Ended").
-		        setMessage("Your score is: " + score.getText()).
-		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int id) {
-			        	game_instance.finalization();
-			        	game_instance.loadNextGame();
-			        }
-		        });
-		    	alert.show();
-		    }
-		});
+		mScene.unregisterUpdateHandler(mTimerHandler);
+    	game_instance.finalization();
+    	game_instance.loadNextGame();
 	}
 	
 	private void change_score(int value) {
@@ -89,6 +92,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	}
 	
 	private void randomize_enemy_location() {
+		enemy.setVisible(true);
 		Random random_number = new Random(System.currentTimeMillis());
 		enemy.setPosition(random_number.nextInt((int) (screen_width() - enemy.getWidth())), -enemy.getHeight());
 	}
@@ -111,8 +115,15 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		return new Sprite(0, 0, textures.get("ship"), game_instance.getVertexBufferObjectManager());
 	}
 	
+	private void explode() {
+		explosionSound.play();
+    	explosion.setPosition(enemy.getX(), enemy.getY());
+    	explosion.setVisible(true);
+    	enemy.setVisible(false);
+	}
+	
 	private void catching_enemy_logic(Scene a_scene) {
-		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
+		mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
 		    public void onTimePassed(TimerHandler pTimerHandler) {
 		    	speed--;
@@ -126,17 +137,21 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		                Sprite bullet = iter.next();
 		            	bullet.setPosition(bullet.getX(), bullet.getY() - 3);
 		            	if(enemy.getY() > bullet.getY() && (enemy.getX() >= (bullet.getX() - bullet.getWidth()/2) && enemy.getX() <= bullet.getX() + bullet.getWidth())) {
+		            		explode();
 		            		change_score(100);
 		            		game_instance.addPoints(100);
 		            		iter.remove();
-			            	explosion.setPosition(enemy.getX(), enemy.getY());
-			            	explosion.setVisible(true);
 			            	randomize_enemy_location();
 			            	bullet.setVisible(false);
 		            	}
 		                if(bullet.getY() < -bullet.getHeight() && bullet.isVisible()) {
 		            		iter.remove();
 		            	}
+		            }
+		            
+		            if(enemy.getY() > ship.getY() && (enemy.getX() >= ship.getX() && enemy.getX() <= ship.getX() + ship.getWidth())) {
+		            	explode();
+		            	show_score();
 		            }
 
 		            if(enemy.getY() > screen_height() + enemy.getHeight()) {
@@ -171,6 +186,14 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 		this.textures = textures;
 		this.speed = 10;
 		this.current_speed = 10;
+		mScene = a_scene;
+		
+		try {
+			cannonSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/cannon.wav");
+			explosionSound = SoundFactory.createSoundFromAsset(game_instance.getSoundManager(), game_instance, "arcadeshooter/explosion.wav");
+		} catch (IOException e) {
+			Debug.e(e);
+		}
 		bullets = new ArrayList<Sprite>();
 		a_scene.setOnSceneTouchListener(this);
 		set_environment(a_scene);
@@ -179,6 +202,7 @@ public class ArcadeShooterLogic implements IAccelerationListener, IOnSceneTouchL
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		if (pSceneTouchEvent.isActionDown()) {
+			cannonSound.play();
 	        float bulletX = ship.getX(),
 	        	  bulletY = screen_height() - ship.getHeight() + 10;
 	        Sprite bullet = new Sprite(bulletX, bulletY, textures.get("bullet"), game_instance.getVertexBufferObjectManager());
