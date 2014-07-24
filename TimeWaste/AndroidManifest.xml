@@ -74,7 +74,7 @@
             android:launchMode="singleTop"
             android:name="com.timewaste.games.drinkfarm.DrinkFarm"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_drink_farm"
+            android:label="DrinkFarm"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
 
