@@ -40,7 +40,9 @@ public class ShitmageddonLogic implements IAccelerationListener {
 	private Shitmageddon game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
+	private TimerHandler mTimerHandler;
 	private int speed, current_speed;
+	private Scene mScene;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -71,6 +73,7 @@ public class ShitmageddonLogic implements IAccelerationListener {
 		        setMessage("Your score is: " + score.getText()).
 		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int id) {
+			        	mScene.unregisterUpdateHandler(mTimerHandler);
 			        	game_instance.finalization();
 			        	game_instance.loadNextGame();
 			        }
@@ -123,7 +126,7 @@ public class ShitmageddonLogic implements IAccelerationListener {
 	}
 	
 	private void catching_shit_logic(Scene a_scene) {
-		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
+		mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
 		    public void onTimePassed(TimerHandler pTimerHandler) {
 		    	speed--;
@@ -165,6 +168,7 @@ public class ShitmageddonLogic implements IAccelerationListener {
 	}
 	
 	public ShitmageddonLogic(Shitmageddon game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+		mScene = a_scene;
 		this.game_instance = game_instance;
 		this.textures = textures;
 		this.speed = 5;

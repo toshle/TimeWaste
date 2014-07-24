@@ -38,17 +38,13 @@ public class Runner extends GameActivity {
 
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Music gameMusic;
+	
+	private static final int CAMERA_WIDTH = 720;
+	private static final int CAMERA_HEIGHT = 480;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		if(screen_height() < screen_width()) {
-			CAMERA_WIDTH = screen_width();
-			CAMERA_HEIGHT = screen_height();
-		} else {
-			CAMERA_WIDTH = screen_height();
-			CAMERA_HEIGHT = screen_width();
-		}
 		
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -65,7 +61,7 @@ public class Runner extends GameActivity {
 		//Load animated Textures
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/runner/png/");
 		BuildableBitmapTextureAtlas animated_texture = new BuildableBitmapTextureAtlas(this.getTextureManager(), 4096, 4096, TextureOptions.NEAREST);
-		TiledTextureRegion stickmanRun  = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(animated_texture, this, "stickmanrun1.gif", 9, 8);
+		TiledTextureRegion stickmanRun  = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(animated_texture, this, "stickmanrun1.png", 9, 8);
 		TiledTextureRegion stickmanRoll = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(animated_texture, this, "stickmanroll.gif", 2, 2);
 		
 		textures.put("stickmanrun", stickmanRun);
@@ -88,28 +84,10 @@ public class Runner extends GameActivity {
 				}
 			});
 			
-			ITexture toilet = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
-				@Override
-				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/shitmageddon/gif/toilet.gif");
-				}
-			});
-			
-			ITexture shit = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
-		        @Override
-		        public InputStream open() throws IOException {
-		            return context.getAssets().open("gfx/shitmageddon/gif/shit.gif");
-		        }
-		    });
-			
 			background.load();
-			shit.load();
-		    toilet.load();
 
 		    
 		    textures.put("background", TextureRegionFactory.extractFromTexture(background));
-		    textures.put("toilet", TextureRegionFactory.extractFromTexture(toilet));
-		    textures.put("shit", TextureRegionFactory.extractFromTexture(shit));
 		    
 		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "runner/Two_Steps_From_Hell_-_Winterspell_SkyWorld_.ogg");
 			this.gameMusic.setLooping(true);

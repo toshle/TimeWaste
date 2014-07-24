@@ -74,7 +74,7 @@ public class DrinkFarmLogic {
 	private void change_score(int value) {
 		int current_score = Integer.parseInt(this.score.getText().toString());
 		this.score.setText(Integer.toString(current_score + value));
-		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
+		this.score.setPosition(device_width / 2 - score.getWidth(), 80);
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -84,8 +84,7 @@ public class DrinkFarmLogic {
 		this.score =
 				new Text(0, 0, font, "0", 6,
 				new TextOptions(HorizontalAlign.CENTER), game_instance.getVertexBufferObjectManager());
-		
-		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
+		this.score.setPosition(device_width / 2 - score.getWidth(), 80);
 
 		a_scene.attachChild(this.score);
 	}
@@ -118,6 +117,8 @@ public class DrinkFarmLogic {
 		    		//show_score();
 		    		liquid_stream_half.setVisible(true);
 		    		liquid_stream.setVisible(false);
+		    		change_score(1);
+		    		game_instance.addPoints(1);
 		    	}
 		    	else{
 		    		liquid_stream.setVisible(true);
@@ -155,9 +156,9 @@ public class DrinkFarmLogic {
 		this.textures = textures;
 		
 		this.scene = a_scene;
-		set_fonts(a_scene);
 		
 		set_ground_images(a_scene);	
+		set_fonts(a_scene);
 	}
 	
 	public void render(Scene a_scene) {

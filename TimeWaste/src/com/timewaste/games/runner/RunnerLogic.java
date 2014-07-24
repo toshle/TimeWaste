@@ -58,7 +58,7 @@ public class RunnerLogic {
 		    @Override
 		    public void run() {
 		        Toast toast = Toast.makeText(game_instance, message, Toast.LENGTH_SHORT);
-		        toast.setGravity(Gravity.TOP|Gravity.LEFT, screen_width() / 2 - 80, 0);
+		        toast.setGravity(Gravity.TOP|Gravity.LEFT, 720 / 2 - 60, 0);
 		        toast.show();
 		    }
 		});
@@ -101,7 +101,7 @@ public class RunnerLogic {
 	private void change_score(int value) {
 		int current_score = Integer.parseInt(this.score.getText().toString());
 		this.score.setText(Integer.toString(current_score + value));
-		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
+		this.score.setPosition((720 - this.score.getWidth()) / 2, 80);
 	}
 	
 	private void generate_rectangle(Scene a_scene) {
@@ -109,8 +109,8 @@ public class RunnerLogic {
 			Random random_number = new Random(System.currentTimeMillis());
 			
 			Rectangle rectangle = new Rectangle(
-					screen_width(),
-			 	    stickmanRun.getY() + screen_height() / (4.2f - random_number.nextInt(4) * 0.5f),
+					720,
+			 	    stickmanRun.getY() + 420 / (4.2f - random_number.nextInt(4) * 0.5f),
 			 	    30, 30, game_instance.getVertexBufferObjectManager());
 			
 			rectangle.setColor(random_number.nextFloat(), random_number.nextFloat(), random_number.nextFloat());
@@ -128,7 +128,7 @@ public class RunnerLogic {
 				new Text(0, 0, font, "0", 6,
 				new TextOptions(HorizontalAlign.CENTER), game_instance.getVertexBufferObjectManager());
 		
-		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
+		this.score.setPosition(720 - this.score.getWidth() / 2, 80);
 
 		a_scene.attachChild(this.score);
 	}
@@ -178,7 +178,7 @@ public class RunnerLogic {
     		isJumping = false;
     		isRolling  = false;
     		action(false);
-			stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+    		stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + 100);
     	}
 	}
 	
@@ -190,6 +190,7 @@ public class RunnerLogic {
             if(rectangle.getX() < -rectangle.getWidth() && rectangle.isVisible()){
             	iter.remove();
             	change_score(100);
+            	game_instance.addPoints(100);
             }
          	
             //You are practically immortal when you barrel roll. :@
@@ -218,7 +219,7 @@ public class RunnerLogic {
 			roll_time = 500;
 			if(isJumping) {
 				isJumping = false;
-				stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+				stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + 100);
 			}
 		}
 	}
@@ -244,12 +245,12 @@ public class RunnerLogic {
 	private void set_environment(Scene a_scene) {
 		stickmanRun.animate(10);
 		stickmanRun.setScale(0.3f, 0.3f);
-		this.stickmanRun.setPosition(screen_width() / 10, screen_height() / 4.8f);
+		this.stickmanRun.setPosition(90, 100);
 		a_scene.attachChild(this.stickmanRun);
 		
 		stickmanRoll.animate(100);
 		stickmanRoll.setScale(0.3f, 0.3f);
-		stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+		stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + 100);
 		stickmanRoll.setVisible(false);
 		a_scene.attachChild(this.stickmanRoll);
 		

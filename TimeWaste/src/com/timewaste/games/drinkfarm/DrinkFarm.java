@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.LinkedList;
 
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -36,6 +38,7 @@ public class DrinkFarm extends GameActivity {
 	private static Scene scene;
 	
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
+	private Music gameMusic;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -49,12 +52,16 @@ public class DrinkFarm extends GameActivity {
 		}
 		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
+
+		engineOptions.getAudioOptions().setNeedsMusic(true);
+		return engineOptions;
 	}
 	
 	@Override
 	public void onCreateResources() {
 		super.onCreateResources();
+		MusicFactory.setAssetBasePath("mfx/");
 		final Context context = this;
 		try {
 			ITexture machine = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
@@ -103,6 +110,9 @@ public class DrinkFarm extends GameActivity {
 		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));
 		    textures.put("liquid_stream", TextureRegionFactory.extractFromTexture(liquid_stream));
 		    textures.put("liquid_stream_half", TextureRegionFactory.extractFromTexture(liquid_stream_half));
+		
+		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "drinkfarm/background.ogg");
+			this.gameMusic.setLooping(true);
 		} catch (IOException e) {
 			Debug.e(e);
 		}
@@ -120,11 +130,12 @@ public class DrinkFarm extends GameActivity {
 		final Sprite background_image = new Sprite(0, 0, this.textures.get("machine"), this.getVertexBufferObjectManager()); 
 		background_image.setWidth(CAMERA_WIDTH);
 		background_image.setHeight(CAMERA_HEIGHT);
-		
+		System.out.println(CAMERA_WIDTH);
 		scene.attachChild(background_image);
 		
 		DrinkFarmLogic logic = new DrinkFarmLogic(this, scene, this.textures);
 		logic.render(scene);
+		gameMusic.play();
 		this.runCycle(scene);
 		
 		return scene;
