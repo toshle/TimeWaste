@@ -86,7 +86,7 @@ public class Evade extends GameActivity {
 		    textures.put("hole", TextureRegionFactory.extractFromTexture(hole));
 		    textures.put("car", TextureRegionFactory.extractFromTexture(car));
 		    
-		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shitmageddon/Heroes_of_Might_and_Magic_3_Music-_Combat_2.ogg");
+		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "evade/driving.ogg");
 			this.gameMusic.setLooping(true);
 			
 		} catch (IOException e) {
@@ -102,15 +102,14 @@ public class Evade extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
 
-		/* Create the background and add it to the scene. */
 		final Sprite ground_image = new Sprite(0, 0, this.textures.get("road"), this.getVertexBufferObjectManager()); 
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		//@SuppressWarnings("unused")
+
 		EvadeLogic logic = new EvadeLogic(this, scene, this.textures);
 		this.enableAccelerationSensor(logic);
-		//Evade.this.gameMusic.play();
+		Evade.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;
 	}
