@@ -1,27 +1,31 @@
 package com.timewaste.games.runner;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
 
-
-import org.andengine.AndEngine;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 
-import com.timewaste.timewaste.GameActivity;
-
 import android.graphics.Color;
+import android.graphics.Point;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -29,19 +33,24 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 public class RunnerLogic {
+	final int SPEED_VALUE = 5;
 	//Fields
-	private Sprite toilet, shit;
-	private GameActivity game_instance;
+	final private AnimatedSprite stickmanRun, stickmanRoll;
+	private Point finger_coordinates;
+	private List<Rectangle> obstacles;
+	private Runner game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
-	private int speed, current_speed;
+	private int iteration_speed, generate_speed, current_generate_speed, roll_time, jump_time;
+	private float current_speed;
+	boolean isRolling, isJumping;
 	
 	private int screen_width() {
-		return game_instance.getResources().getDisplayMetrics().widthPixels;
+		return game_instance.cameraWidth();
 	}
 	
 	private int screen_height() {
-		return game_instance.getResources().getDisplayMetrics().heightPixels;
+		return game_instance.cameraHeight();
 	}
 	
 	private void speed_toast (final String message) {
@@ -73,19 +82,21 @@ public class RunnerLogic {
 		    }
 		});
 	}
-	
-	private void set_fall_speed() {
-		int speed_before_change = this.current_speed;
+
+	private void set_speed() {
+		float speed_before_change = this.current_speed;
 		int current_score = Integer.parseInt(this.score.getText().toString());
-		if(current_score < 1000) this.current_speed = 5;
-		if(current_score >= 1000 && current_score < 2000) this.current_speed = 4;
-		if(current_score >= 2000 && current_score < 3000) this.current_speed = 3;
-		if(current_score >= 3000 && current_score < 5000) this.current_speed = 2;
-		if(current_score >= 5000) this.current_speed = 1;
+		if(current_score > 1200) this.current_speed = 2.0f;
+		if(current_score > 3000) this.current_speed = 2.5f;
+		if(current_score > 4500) this.current_speed = 3.0f;
+		if(current_score > 7500) this.current_speed = 3.5f;
 		
-		if(this.current_speed > speed_before_change) speed_toast("Speed down!");
-		if(this.current_speed < speed_before_change) speed_toast("Speed up!");
+		if(this.current_speed > speed_before_change) {
+			speed_toast("Speed up!");
+			current_generate_speed -= 100;
+		}
 	}
+
 	
 	private void change_score(int value) {
 		int current_score = Integer.parseInt(this.score.getText().toString());
@@ -93,9 +104,20 @@ public class RunnerLogic {
 		this.score.setPosition((screen_width() - this.score.getWidth()) / 2 - 30, 80);
 	}
 	
-	private void randomize_shit_location() {
-		Random random_number = new Random(System.currentTimeMillis());
-		shit.setPosition(random_number.nextInt(screen_width()), 0);
+	private void generate_rectangle(Scene a_scene) {
+		if(this.generate_speed == 0) {
+			Random random_number = new Random(System.currentTimeMillis());
+			
+			Rectangle rectangle = new Rectangle(
+					screen_width(),
+			 	    stickmanRun.getY() + screen_height() / (4.2f - random_number.nextInt(4) * 0.5f),
+			 	    30, 30, game_instance.getVertexBufferObjectManager());
+			
+			rectangle.setColor(random_number.nextFloat(), random_number.nextFloat(), random_number.nextFloat());
+			a_scene.attachChild(rectangle);
+			obstacles.add(rectangle);
+	        generate_speed = current_generate_speed;
+		}
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -111,62 +133,146 @@ public class RunnerLogic {
 		a_scene.attachChild(this.score);
 	}
 	
-	//Dragging toilet logic.
-	private Sprite set_image_logic(){
-		return new Sprite(0, 0, textures.get("toilet"), game_instance.getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, this.getY());
-				return true;
-			}
-		};
-	}
-	
-	private void catching_shit_logic(Scene a_scene) {
+	private void generating_obstacles_logic(final Scene a_scene) {
 		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
 		    public void onTimePassed(TimerHandler pTimerHandler) {
-		    	speed--;
-		        if(speed == 0) {
-		        	speed = current_speed;
-		            shit.setPosition(shit.getX(), shit.getY() + 1);
-		            //If you catch the shit
-		            if(shit.getY() > toilet.getY() && (shit.getX() >= toilet.getX() && shit.getX() <= toilet.getX() + toilet.getWidth())) {
-		            	change_score(100);
-		            	randomize_shit_location();
-		            }
-		            //If you miss the shit
-		            if(shit.getY() > screen_height() - shit.getHeight()) {
-		            	change_score(-200);
-		            	randomize_shit_location();
-		            }
+		    	iteration_speed--;
+		    	generate_speed--;
+		    	if(isRolling) roll_time--;
+		    	if(isJumping) jump_time--;
+		        if(iteration_speed == 0) {
+		        	iteration_speed = SPEED_VALUE;
+		        	generate_rectangle(a_scene);
+		        	if(isRolling) roll();
+		        	if(isJumping) jump();
+		        	move_obstacles();
 		        }
-		        set_fall_speed();
-		        //show_score when 30 seconds pass Roska?
+		        set_speed();
 		    }
 		});
 		a_scene.registerUpdateHandler(mTimerHandler);
 	}
 	
-	//Formula to set the ground images. Also registering touch events for every image.
-	private void set_environment(Scene a_scene) {       
-		this.toilet = set_image_logic();
-		this.toilet.setPosition(screen_width() / 2 - this.toilet.getWidth() / 2, screen_height() - this.toilet.getHeight() + 10);
-		a_scene.registerTouchArea(this.toilet);
-		a_scene.attachChild(this.toilet);
-		
-		this.shit = new Sprite(screen_width() / 2 - this.toilet.getWidth() / 2, 0, textures.get("shit"), game_instance.getVertexBufferObjectManager());
-		a_scene.registerTouchArea(this.shit);
-		a_scene.attachChild(this.shit);
-		set_fonts(a_scene);
-		catching_shit_logic(a_scene);
+	Sprite sprite_in_action() {
+		if(stickmanRun.isVisible()) return stickmanRun;
+		return stickmanRoll;
 	}
 	
-	public RunnerLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	void action(boolean act) {
+		stickmanRun.setVisible(!act);
+		stickmanRoll.setVisible(act);
+	}
+	
+	void roll() {
+		if(roll_time <= 0) {
+			isRolling = false;
+    		action(false);
+    	}
+	}
+	
+	void jump() {
+		if(jump_time >= 350) stickmanRoll.setPosition(stickmanRoll.getX(), stickmanRoll.getY() - 1);
+    	if(jump_time <  350) stickmanRoll.setPosition(stickmanRoll.getX(), stickmanRoll.getY() + 1);
+    	if(jump_time <= 0) {
+    		isJumping = false;
+    		isRolling  = false;
+    		action(false);
+			stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+    	}
+	}
+	
+	void move_obstacles() {
+		Iterator<Rectangle> iter = obstacles.iterator();
+        while(iter.hasNext()){
+        	Rectangle rectangle = iter.next();
+        	rectangle.setPosition(rectangle.getX() - 2, rectangle.getY());
+            if(rectangle.getX() < -rectangle.getWidth() && rectangle.isVisible()){
+            	iter.remove();
+            	change_score(100);
+            }
+         	
+            //You are practically immortal when you barrel roll. :@
+            if(
+            	rectangle.getX() > sprite_in_action().getX() * 1.4f && !isRolling &&
+            	sprite_in_action().getX() + rectangle.getX() / 1.8f > rectangle.getX() &&
+            	sprite_in_action().getY() + sprite_in_action().getHeight() / 1.8f > rectangle.getY()) {
+	            	show_score();
+	            	this.iteration_speed = -1;
+            }
+        }
+	}
+	
+	private void swipe_up() {
+		if(!isJumping) {
+			isJumping = true;
+			jump_time = 700;
+			stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + stickmanRoll.getHeight() / 3);
+			if(isRolling) isRolling = false;
+		}
+	}
+	
+	private void swipe_down() {
+		if(!isRolling) {
+			isRolling  = true;
+			roll_time = 500;
+			if(isJumping) {
+				isJumping = false;
+				stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+			}
+		}
+	}
+	
+	private void swipe_logic(Scene a_scene) {
+		a_scene.setOnSceneTouchListener(new IOnSceneTouchListener() {
+			@Override
+			public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+				if(pSceneTouchEvent.isActionDown()) {
+					finger_coordinates.set((int)pSceneTouchEvent.getX(), (int)pSceneTouchEvent.getY());
+				}
+				if(pSceneTouchEvent.isActionUp()) { 
+					action(true);
+					if(finger_coordinates.y > pSceneTouchEvent.getY()) swipe_up();
+					else swipe_down();
+				}
+				return false;
+			}
+		});
+	}
+	
+	//Formula to set the ground images. Also registering touch events for every image.
+	private void set_environment(Scene a_scene) {
+		stickmanRun.animate(10);
+		stickmanRun.setScale(0.3f, 0.3f);
+		this.stickmanRun.setPosition(screen_width() / 10, screen_height() / 4.8f);
+		a_scene.attachChild(this.stickmanRun);
+		
+		stickmanRoll.animate(100);
+		stickmanRoll.setScale(0.3f, 0.3f);
+		stickmanRoll.setPosition(stickmanRun.getX(), stickmanRun.getY() + screen_height() / 4.7f);
+		stickmanRoll.setVisible(false);
+		a_scene.attachChild(this.stickmanRoll);
+		
+		set_fonts(a_scene);
+		swipe_logic(a_scene);
+		generating_obstacles_logic(a_scene);
+	}
+	
+	public RunnerLogic(Runner game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
-		this.speed = 5;
-		this.current_speed = 5;
+		this.iteration_speed = SPEED_VALUE;
+		this.isRolling = false;
+		this.isJumping = false;
+		this.generate_speed = 1000;
+		this.current_generate_speed = 1000;
+		this.roll_time = 500;
+		this.jump_time = 700;
+		this.current_speed = 1.5f;
+		this.finger_coordinates = new Point();
+		this.obstacles = new ArrayList<Rectangle>();
+		this.stickmanRun  = new AnimatedSprite(0, 0, (TiledTextureRegion)this.textures.get("stickmanrun"), game_instance.getVertexBufferObjectManager());
+		this.stickmanRoll = new AnimatedSprite(100, 0, (TiledTextureRegion)this.textures.get("stickmanroll"), game_instance.getVertexBufferObjectManager());
 		set_environment(a_scene);
 	}
 }
