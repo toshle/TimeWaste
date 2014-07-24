@@ -32,7 +32,7 @@ public class Categories {
 		categories[1].add(DrinkFarm.class);
 		//categories[3].add(Evade.class);
 		//categories[3].add(Shitmageddon.class);
-		categories[3].add(ArcadeShooter.class);
+		categories[3].add(Runner.class);
 	}
 	
 	public Class<?> selectGame(int category, Class<?> current) {
