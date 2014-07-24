@@ -44,6 +44,8 @@ public class RunnerLogic {
 	private int iteration_speed, generate_speed, current_generate_speed, roll_time, jump_time;
 	private float current_speed;
 	boolean isRolling, isJumping;
+	private Scene mScene;
+	private TimerHandler mTimerHandler;
 	
 	private int screen_width() {
 		return game_instance.cameraWidth();
@@ -74,6 +76,7 @@ public class RunnerLogic {
 		        setMessage("Your score is: " + score.getText()).
 		        setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int id) {
+			        	mScene.unregisterUpdateHandler(mTimerHandler);
 			        	game_instance.finalization();
 			        	game_instance.loadNextGame();
 			        }
@@ -134,7 +137,7 @@ public class RunnerLogic {
 	}
 	
 	private void generating_obstacles_logic(final Scene a_scene) {
-		TimerHandler mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
+		mTimerHandler = new TimerHandler(0.001f, true, new ITimerCallback() {
 		    @Override
 		    public void onTimePassed(TimerHandler pTimerHandler) {
 		    	iteration_speed--;
