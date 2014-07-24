@@ -40,8 +40,13 @@ public class DrinkFarm extends GameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		super.onCreateEngineOptions();
-		CAMERA_WIDTH = screen_width();
-		CAMERA_HEIGHT = screen_height();
+		if(screen_height() < screen_width()) {
+			CAMERA_WIDTH = screen_width();
+			CAMERA_HEIGHT = screen_height();
+		} else {
+			CAMERA_WIDTH = screen_height();
+			CAMERA_HEIGHT = screen_width();
+		}
 		camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), camera);
@@ -73,13 +78,31 @@ public class DrinkFarm extends GameActivity {
 				}
 			});
 			
+			ITexture liquid_stream = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/drinkfarm/png/liquid_stream.png");
+				}
+			});
+			
+			ITexture liquid_stream_half = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/drinkfarm/png/liquid_stream_half.png");
+				}
+			});
+			
 			machine.load();
 			cup.load();
 			bubble.load();
+			liquid_stream.load();
+			liquid_stream_half.load();
 			
 		    textures.put("machine", TextureRegionFactory.extractFromTexture(machine));
 		    textures.put("cup", TextureRegionFactory.extractFromTexture(cup));
-		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
+		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));
+		    textures.put("liquid_stream", TextureRegionFactory.extractFromTexture(liquid_stream));
+		    textures.put("liquid_stream_half", TextureRegionFactory.extractFromTexture(liquid_stream_half));
 		} catch (IOException e) {
 			Debug.e(e);
 		}

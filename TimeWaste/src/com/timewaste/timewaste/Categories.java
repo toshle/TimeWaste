@@ -27,12 +27,14 @@ public class Categories {
 		categories[3] = new ArrayList<Class<?>>();
 
 		//categories[0].add(TicTacToe.class);
-		categories[0].add(Labyrinth.class);
+		categories[3].add(Evade.class);
 		categories[2].add(Shoot.class);
 		categories[1].add(DrinkFarm.class);
 		//categories[3].add(Evade.class);
 		//categories[3].add(Shitmageddon.class);
 		categories[3].add(Runner.class);
+		categories[0].add(Shitmageddon.class);
+		categories[0].add(ArcadeShooter.class);
 	}
 	
 	public Class<?> selectGame(int category, Class<?> current) {

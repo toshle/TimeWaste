@@ -71,8 +71,11 @@
         </activity>
 
 		<activity
+            android:launchMode="singleTop"
             android:name="com.timewaste.games.drinkfarm.DrinkFarm"
-            android:label="@string/title_activity_drink_farm" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="DrinkFarm"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
 
 		<activity
@@ -80,6 +83,14 @@
             android:name="com.timewaste.games.evade.Evade"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Evade"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
+        </activity>
+        
+		<activity
+            android:launchMode="singleTop"
+            android:name="com.timewaste.games.crossthestreet.CrossTheStreet"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="CrossTheStreet"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
 

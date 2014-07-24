@@ -57,36 +57,36 @@ public class Evade extends GameActivity {
 		MusicFactory.setAssetBasePath("mfx/");
 		final Context context = this;
 		try {
-			ITexture background = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+			ITexture road = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/shitmageddon/png/background.png");
+					return context.getAssets().open("gfx/evade/road.jpg");
 				}
 			});
 			
-			ITexture toilet = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+			ITexture hole = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 				@Override
 				public InputStream open() throws IOException {
-					return context.getAssets().open("gfx/shitmageddon/gif/toilet.gif");
+					return context.getAssets().open("gfx/evade/hole.png");
 				}
 			});
 			
-			ITexture shit = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+			ITexture car = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
 		        @Override
 		        public InputStream open() throws IOException {
-		            return context.getAssets().open("gfx/shitmageddon/gif/shit.gif");
+		            return context.getAssets().open("gfx/evade/car.png");
 		        }
 		    });
 			
-			background.load();
-			shit.load();
-		    toilet.load();
+			road.load();
+			car.load();
+			hole.load();
 
-		    textures.put("background", TextureRegionFactory.extractFromTexture(background));
-		    textures.put("toilet", TextureRegionFactory.extractFromTexture(toilet));
-		    textures.put("shit", TextureRegionFactory.extractFromTexture(shit));
+		    textures.put("road", TextureRegionFactory.extractFromTexture(road));
+		    textures.put("hole", TextureRegionFactory.extractFromTexture(hole));
+		    textures.put("car", TextureRegionFactory.extractFromTexture(car));
 		    
-		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "shitmageddon/Heroes_of_Might_and_Magic_3_Music-_Combat_2.ogg");
+		    this.gameMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "evade/driving.ogg");
 			this.gameMusic.setLooping(true);
 			
 		} catch (IOException e) {
@@ -102,15 +102,14 @@ public class Evade extends GameActivity {
 		final Scene scene = new Scene();
 		scene.setBackground(new Background(0.9f, 0.9f, 0.6f));
 
-		/* Create the background and add it to the scene. */
-		final Sprite ground_image = new Sprite(0, 0, this.textures.get("background"), this.getVertexBufferObjectManager()); 
+		final Sprite ground_image = new Sprite(0, 0, this.textures.get("road"), this.getVertexBufferObjectManager()); 
 		ground_image.setWidth(CAMERA_WIDTH);
 		ground_image.setHeight(CAMERA_HEIGHT);
 		scene.attachChild(ground_image);
-		//@SuppressWarnings("unused")
-		//ShitmageddonLogic logic = new ShitmageddonLogic(this, scene, this.textures);
-		
-		//Evade.this.gameMusic.play();
+
+		EvadeLogic logic = new EvadeLogic(this, scene, this.textures);
+		this.enableAccelerationSensor(logic);
+		Evade.this.gameMusic.play();
 		this.runCycle(scene);
 		return scene;
 	}
