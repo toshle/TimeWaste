@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.timewaste.games.arcadeshooter.ArcadeShooter;
+import com.timewaste.games.crossthestreet.CrossTheStreet;
 import com.timewaste.games.drinkfarm.DrinkFarm;
 import com.timewaste.games.evade.Evade;
 import com.timewaste.games.labyrinth.Labyrinth;
@@ -27,7 +28,7 @@ public class Categories {
 		categories[3] = new ArrayList<Class<?>>();
 
 		//categories[0].add(TicTacToe.class);
-		categories[3].add(Evade.class);
+		categories[3].add(CrossTheStreet.class);
 		categories[2].add(Shoot.class);
 		categories[1].add(DrinkFarm.class);
 		//categories[3].add(Evade.class);
