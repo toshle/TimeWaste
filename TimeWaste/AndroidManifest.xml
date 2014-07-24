@@ -61,10 +61,21 @@
             android:label="Shitmageddon"
             android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
+        
+ 		<activity
+            android:launchMode="singleTop"
+            android:name="com.timewaste.games.runner.Runner"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Runner"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
+        </activity>
 
 		<activity
+            android:launchMode="singleTop"
             android:name="com.timewaste.games.drinkfarm.DrinkFarm"
-            android:label="@string/title_activity_drink_farm" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_drink_farm"
+            android:parentActivityName="com.timewaste.timewaste.CategoriesActivity" >
         </activity>
 
 		<activity

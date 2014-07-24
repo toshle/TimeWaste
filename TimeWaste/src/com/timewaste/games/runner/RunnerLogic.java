@@ -1,11 +1,8 @@
-package com.timewaste.games.shitmageddon;
+package com.timewaste.games.runner;
 
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-
-
-
 
 
 
@@ -20,8 +17,6 @@ import org.andengine.util.HorizontalAlign;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
-import org.andengine.input.sensor.acceleration.AccelerationData;
-import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.input.touch.TouchEvent;
 
 import com.timewaste.timewaste.GameActivity;
@@ -31,23 +26,22 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.view.Gravity;
-import android.view.Surface;
 import android.widget.Toast;
 
-public class ShitmageddonLogic implements IAccelerationListener {
+public class RunnerLogic {
 	//Fields
 	private Sprite toilet, shit;
-	private Shitmageddon game_instance;
+	private GameActivity game_instance;
 	private Map<String, ITextureRegion> textures = new TreeMap<String, ITextureRegion>();
 	private Text score;
 	private int speed, current_speed;
 	
 	private int screen_width() {
-		return game_instance.cameraWidth();
+		return game_instance.getResources().getDisplayMetrics().widthPixels;
 	}
 	
 	private int screen_height() {
-		return game_instance.cameraHeight();
+		return game_instance.getResources().getDisplayMetrics().heightPixels;
 	}
 	
 	private void speed_toast (final String message) {
@@ -101,7 +95,7 @@ public class ShitmageddonLogic implements IAccelerationListener {
 	
 	private void randomize_shit_location() {
 		Random random_number = new Random(System.currentTimeMillis());
-		shit.setPosition(random_number.nextInt((int)(screen_width() - shit.getWidth())), 0);
+		shit.setPosition(random_number.nextInt(screen_width()), 0);
 	}
 	
 	private void set_fonts(Scene a_scene) {
@@ -119,7 +113,13 @@ public class ShitmageddonLogic implements IAccelerationListener {
 	
 	//Dragging toilet logic.
 	private Sprite set_image_logic(){
-		return new Sprite(0, 0, textures.get("toilet"), game_instance.getVertexBufferObjectManager());
+		return new Sprite(0, 0, textures.get("toilet"), game_instance.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, this.getY());
+				return true;
+			}
+		};
 	}
 	
 	private void catching_shit_logic(Scene a_scene) {
@@ -133,13 +133,11 @@ public class ShitmageddonLogic implements IAccelerationListener {
 		            //If you catch the shit
 		            if(shit.getY() > toilet.getY() && (shit.getX() >= toilet.getX() && shit.getX() <= toilet.getX() + toilet.getWidth())) {
 		            	change_score(100);
-	            		game_instance.addPoints(100);
 		            	randomize_shit_location();
 		            }
 		            //If you miss the shit
 		            if(shit.getY() > screen_height() - shit.getHeight()) {
 		            	change_score(-200);
-	            		game_instance.addPoints(-200);
 		            	randomize_shit_location();
 		            }
 		        }
@@ -164,24 +162,11 @@ public class ShitmageddonLogic implements IAccelerationListener {
 		catching_shit_logic(a_scene);
 	}
 	
-	public ShitmageddonLogic(Shitmageddon game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
+	public RunnerLogic(GameActivity game_instance, Scene a_scene, Map<String, ITextureRegion> textures) {
 		this.game_instance = game_instance;
 		this.textures = textures;
 		this.speed = 5;
 		this.current_speed = 5;
 		set_environment(a_scene);
-	}
-
-	@Override
-	public void onAccelerationAccuracyChanged(AccelerationData pAccelerationData) {
-		
-	}
-
-	@Override
-	public void onAccelerationChanged(AccelerationData pAccelerationData) {
-		float newX = toilet.getX() + pAccelerationData.getX()*2;
-		if(newX >= 0 && newX <= screen_width() - toilet.getWidth()) {
-			toilet.setPosition(newX, toilet.getY());
-		}
 	}
 }

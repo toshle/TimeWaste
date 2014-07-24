@@ -132,8 +132,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 
 	@Override
 	protected void onStop() {
-		finalization();
 		super.onStop();
+		finalization();
 	}
 
 	@Override
