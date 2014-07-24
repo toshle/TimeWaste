@@ -73,13 +73,22 @@ public class DrinkFarm extends GameActivity {
 				}
 			});
 			
+			ITexture liquid_stream = new BitmapTexture(this.getTextureManager(), new IInputStreamOpener() {
+				@Override
+				public InputStream open() throws IOException {
+					return context.getAssets().open("gfx/drinkfarm/png/liquid_stream.png");
+				}
+			});
+			
 			machine.load();
 			cup.load();
 			bubble.load();
+			liquid_stream.load();
 			
 		    textures.put("machine", TextureRegionFactory.extractFromTexture(machine));
 		    textures.put("cup", TextureRegionFactory.extractFromTexture(cup));
-		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));	
+		    textures.put("bubble", TextureRegionFactory.extractFromTexture(bubble));
+		    textures.put("liquid_stream", TextureRegionFactory.extractFromTexture(liquid_stream));
 		} catch (IOException e) {
 			Debug.e(e);
 		}
